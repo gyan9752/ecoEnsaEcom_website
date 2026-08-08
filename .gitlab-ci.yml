@@ -4,7 +4,7 @@ stages:
 
 variables:
   SSH_USER: "girjeshwhats"
-  # SERVER_IP: "72.62.196.87"
+
   SERVER_IP: "66.116.244.42"
   SSH_PORT: "22"
   APP_DIR: "/home/girjeshwhats/scriza/ecoensa/website"
