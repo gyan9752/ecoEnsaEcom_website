@@ -1,26 +1,30 @@
+```yaml
 stages:
   - build
   - deploy
 
 variables:
   SSH_USER: "girjeshwhats"
-
   SERVER_IP: "66.116.244.42"
   SSH_PORT: "22"
   APP_DIR: "/home/girjeshwhats/scriza/ecoensa/website"
   PM2_APP_NAME: "ecoensa-website"
 
-
-
-before_script:
-  - echo "Starting Next.js Pipeline..."
-
 build:
   stage: build
   image: node:20-alpine
 
+  before_script:
+    - echo "Starting Next.js Pipeline..."
+
   script:
-    - npm install
+    - echo "Removing old node_modules..."
+    - rm -rf node_modules
+
+    - echo "Installing dependencies..."
+    - npm ci
+
+    - echo "Building Next.js app..."
     - npm run build
 
   artifacts:
@@ -37,6 +41,7 @@ build:
       - hooks/
       - tailwind.config.js
       - postcss.config.js
+    expire_in: 1 hour
 
 deploy:
   stage: deploy
@@ -52,29 +57,58 @@ deploy:
 
     # Known Hosts
     - touch ~/.ssh/known_hosts
-    - ssh-keyscan -p $SSH_PORT -H $SERVER_IP >> ~/.ssh/known_hosts 2>/dev/null || true
+    - ssh-keyscan -p "$SSH_PORT" -H "$SERVER_IP" >> ~/.ssh/known_hosts 2>/dev/null || true
 
   script:
-    # Upload project files
-    - rsync -avz --delete -e "ssh -p $SSH_PORT -i ~/.ssh/id_rsa -o IdentitiesOnly=yes" ./ $SSH_USER@$SERVER_IP:$APP_DIR/
 
-    # Restart PM2
+    # Upload project files
+    - echo "Uploading project files..."
+
     - |
-      ssh -p $SSH_PORT -i ~/.ssh/id_rsa -o IdentitiesOnly=yes $SSH_USER@$SERVER_IP << 'EOF'
+      rsync -avz --delete \
+        --exclude='.git' \
+        -e "ssh -p $SSH_PORT -i ~/.ssh/id_rsa -o IdentitiesOnly=yes" \
+        ./ "$SSH_USER@$SERVER_IP:$APP_DIR/"
+
+    # Server deployment
+    - |
+      ssh -p "$SSH_PORT" \
+        -i ~/.ssh/id_rsa \
+        -o IdentitiesOnly=yes \
+        "$SSH_USER@$SERVER_IP" << 'EOF'
+
+      set -e
 
       cd /home/girjeshwhats/scriza/ecoensa/website
 
+      echo "Removing old node_modules..."
+      rm -rf node_modules
+
       echo "Installing dependencies..."
-      npm install
+      npm ci
 
       echo "Building Next.js app..."
       npm run build
 
-      echo "Stopping old PM2 process..."
-      pm2 delete ecoensa-website || true
+      echo "Checking PM2 application..."
 
-      echo "Starting Next.js app on port 4010..."
-      pm2 start npm --name "ecoensa-website" -- run dev -- --port 4010
+      if pm2 describe ecoensa-website > /dev/null 2>&1; then
+
+        echo "ecoensa-website already exists."
+        echo "Restarting application..."
+
+        pm2 restart ecoensa-website
+
+      else
+
+        echo "ecoensa-website does not exist."
+        echo "Starting new application..."
+
+        pm2 start npm \
+          --name "ecoensa-website" \
+          -- start -- --port 4010
+
+      fi
 
       echo "Saving PM2..."
       pm2 save
@@ -83,7 +117,6 @@ deploy:
       pm2 status
 
       EOF
-      
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
