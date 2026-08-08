@@ -19,6 +19,8 @@ export function CartProvider({ children }) {
     return [];
   });
 
+  
+
   // Save to localStorage whenever cartItems updates
   useEffect(() => {
     if (typeof window !== "undefined") {
