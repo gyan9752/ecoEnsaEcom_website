@@ -236,6 +236,8 @@ export default function Header() {
 
       </div>
 
+      
+
       {/* MOBILE DROPDOWN MENU */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-200 px-4 py-4 space-y-3">
