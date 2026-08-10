@@ -1,45 +1,21 @@
 stages:
-  - build
   - deploy
 
 variables:
   SSH_USER: "girjeshwhats"
-
   SERVER_IP: "66.116.244.42"
   SSH_PORT: "22"
+
   APP_DIR: "/home/girjeshwhats/scriza/ecoensa/website"
   PM2_APP_NAME: "ecoensa-website"
 
-
-
-before_script:
-  - echo "Starting Next.js Pipeline..."
-
-build:
-  stage: build
-  image: node:20-alpine
-
-  script:
-    - npm install
-    - npm run build
-
-  artifacts:
-    paths:
-      - .next/
-      - node_modules/
-      - package.json
-      - package-lock.json
-      - next.config.js
-      - public/
-      - app/
-      - components/
-      - lib/
-      - hooks/
-      - tailwind.config.js
-      - postcss.config.js
+# =========================================================
+# DEPLOY
+# =========================================================
 
 deploy:
   stage: deploy
+
   image: alpine:latest
 
   before_script:
@@ -50,40 +26,129 @@ deploy:
     - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
 
-    # Known Hosts
+    # KNOWN HOST
     - touch ~/.ssh/known_hosts
-    - ssh-keyscan -p $SSH_PORT -H $SERVER_IP >> ~/.ssh/known_hosts 2>/dev/null || true
+    - ssh-keyscan -p "$SSH_PORT" -H "$SERVER_IP" >> ~/.ssh/known_hosts 2>/dev/null || true
 
   script:
-    # Upload project files
-    - rsync -avz --delete -e "ssh -p $SSH_PORT -i ~/.ssh/id_rsa -o IdentitiesOnly=yes" ./ $SSH_USER@$SERVER_IP:$APP_DIR/
 
-    # Restart PM2
+    # =====================================================
+    # UPLOAD SOURCE
+    # =====================================================
+
+    - echo "======================================"
+    - echo "Uploading project files..."
+    - echo "======================================"
+
     - |
-      ssh -p $SSH_PORT -i ~/.ssh/id_rsa -o IdentitiesOnly=yes $SSH_USER@$SERVER_IP << 'EOF'
+      rsync -avz \
+        --delete \
+        --exclude='.git' \
+        --exclude='node_modules' \
+        --exclude='.next' \
+        --exclude='.env' \
+        --exclude='.env.*' \
+        -e "ssh -p $SSH_PORT -i ~/.ssh/id_rsa -o IdentitiesOnly=yes" \
+        ./ "$SSH_USER@$SERVER_IP:$APP_DIR/"
 
-      cd /home/girjeshwhats/scriza/ecoensa/website
+    # =====================================================
+    # SERVER DEPLOYMENT
+    # =====================================================
 
-      echo "Installing dependencies..."
-      npm install
+    - |
+      ssh -p "$SSH_PORT" \
+        -i ~/.ssh/id_rsa \
+        -o IdentitiesOnly=yes \
+        "$SSH_USER@$SERVER_IP" << 'EOF'
 
-      echo "Building Next.js app..."
+      set -e
+
+      APP_DIR="/home/girjeshwhats/scriza/ecoensa/website"
+      PM2_APP_NAME="ecoensa-website"
+
+      echo "======================================"
+      echo "Starting Ecoensa deployment"
+      echo "======================================"
+
+      cd "$APP_DIR"
+
+      echo "Current directory:"
+      pwd
+
+      echo "--------------------------------------"
+      echo "Node version"
+      echo "--------------------------------------"
+
+      node -v
+      npm -v
+
+      echo "--------------------------------------"
+      echo "Stopping PM2 application"
+      echo "--------------------------------------"
+
+      pm2 stop "$PM2_APP_NAME" || true
+
+      echo "--------------------------------------"
+      echo "Removing old node_modules"
+      echo "--------------------------------------"
+
+      rm -rf node_modules
+
+      echo "--------------------------------------"
+      echo "Installing dependencies"
+      echo "--------------------------------------"
+
+      npm ci
+
+      echo "--------------------------------------"
+      echo "Building Next.js application"
+      echo "--------------------------------------"
+
+      rm -rf .next
+
       npm run build
 
-      echo "Stopping old PM2 process..."
-      pm2 delete ecoensa-website || true
+      echo "--------------------------------------"
+      echo "Starting PM2 application"
+      echo "--------------------------------------"
 
-      echo "Starting Next.js app on port 4010..."
-      pm2 start npm --name "ecoensa-website" -- run dev -- --port 4010
+      if pm2 describe "$PM2_APP_NAME" > /dev/null 2>&1; then
 
-      echo "Saving PM2..."
-      pm2 save
+        pm2 restart "$PM2_APP_NAME" --update-env
 
-      echo "PM2 Status:"
+      else
+
+        pm2 start npm \
+          --name "$PM2_APP_NAME" \
+          -- start -- --port 4010
+
+      fi
+
+      echo "--------------------------------------"
+      echo "Checking PM2 status"
+      echo "--------------------------------------"
+
       pm2 status
 
+      echo "--------------------------------------"
+      echo "Checking application"
+      echo "--------------------------------------"
+
+      sleep 5
+
+      curl -f http://127.0.0.1:4010 || exit 1
+
+      echo "--------------------------------------"
+      echo "Recent logs"
+      echo "--------------------------------------"
+
+      pm2 logs "$PM2_APP_NAME" --lines 20 --nostream || true
+
+      echo "======================================"
+      echo "Deployment completed successfully"
+      echo "======================================"
+
       EOF
-      
 
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
