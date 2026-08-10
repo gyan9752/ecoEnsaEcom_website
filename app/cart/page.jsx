@@ -136,12 +136,13 @@ export default function CartPage() {
                           ₹{(item.price * item.quantity).toLocaleString("en-IN")}
                         </span>
 
-                        {/* REMOVE BUTTON */}
+                        {/* DEFAULT RED DELETE BUTTON */}
                         <button
                           onClick={() => removeFromCart(item.id)}
-                          className="text-slate-400 hover:text-rose-600 transition-colors p-2 cursor-pointer"
+                          className="text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-xl border border-red-200/80 transition-all cursor-pointer shadow-xs"
+                          title="Remove Item"
                         >
-                          <Trash2 className="w-5 h-5" />
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

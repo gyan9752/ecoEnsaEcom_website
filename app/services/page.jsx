@@ -120,24 +120,19 @@ export default function ServicesPage() {
       q: "Are all Ecoensa products certified organic?",
       a: "100% Yes. All our products are FSSAI certified, India Organic compliant, and NABL lab-tested for zero pesticide residues.",
     },
-    {
-      q: "Can we order custom corporate gift hampers with our company logo?",
-      a: "Yes, absolutely! We specialize in custom corporate eco-gifting. We provide custom laser-engraved wooden boxes, jute hampers, and personalized greeting cards with your company branding.",
-    },
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col justify-between">
       <Header />
 
-      {/* TOP PADDING SET TO pt-8 sm:pt-10 TO MATCH ALL OTHER PAGES CLEANLY */}
-      <main className="flex-grow pt-8 sm:pt-10 pb-20">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 space-y-14">
-          
-          {/* 🌟 SHORT & COMPACT HERO BANNER */}
-          <div className="bg-gradient-to-br from-emerald-950 via-[#046A38] to-slate-950 rounded-3xl py-10 sm:py-14 px-6 sm:px-12 text-white text-center space-y-5 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-72 h-72 bg-[#FF6B00]/20 rounded-full blur-3xl pointer-events-none" />
+      <main className="flex-grow pb-20">
+        
+        {/* 🌟 FULL-WIDTH HERO BANNER (TOUCHING TOP & BOTH EDGES WITH ZERO MARGIN) */}
+        <section className="w-full bg-gradient-to-br from-emerald-950 via-[#046A38] to-slate-950 py-12 sm:py-16 px-4 sm:px-8 text-white text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-[#FF6B00]/20 rounded-full blur-3xl pointer-events-none" />
 
+          <div className="max-w-[1400px] mx-auto space-y-5 relative z-10">
             <span className="bg-white/10 border border-white/20 text-amber-300 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-flex items-center space-x-1.5">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Scientific Excellence & Organic Living</span>
@@ -167,6 +162,10 @@ export default function ServicesPage() {
               </span>
             </div>
           </div>
+        </section>
+
+        {/* REST OF CONTENT INSIDE 1400PX CONTAINER */}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 space-y-14 pt-10 sm:pt-14">
 
           {/* 2. PAGE HEADER (SMALLER HEADING & SOLID BLACK) */}
           <div className="text-center space-y-3 max-w-3xl mx-auto">

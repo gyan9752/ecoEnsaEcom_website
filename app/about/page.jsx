@@ -23,10 +23,6 @@ export default function AboutPage() {
       q: "What makes your A2 Desi Cow Ghee different from commercial ghee?",
       a: "Our A2 Ghee is hand-crafted using the ancient Vedic Bilona method from grass-fed indigenous Gir cows. We churn curd (dahi) into butter, preserving pure Omega-3 fatty acids, natural aroma, and medicinal potency.",
     },
-     {
-      q: "Are all Ecoensa products 100% certified organic?",
-      a: "Yes, 100%! All our spices, dry fruits, seeds, A2 ghee, and wild honey are sourced directly from certified organic farms in Western Ghats, Kerala & the Himalayas. We never use chemical fertilizers or artificial food dyes.",
-    },
     {
       q: "How long does delivery take across India?",
       a: "We offer Free Express Shipping on orders above ₹999. Orders are dispatched within 24 hours and delivered within 2 to 4 business days via BlueDart, DTDC, and Delhivery.",
@@ -43,8 +39,8 @@ export default function AboutPage() {
 
       <main className="flex-grow pb-24">
         
-        {/* 1. HERO BANNER SECTION */}
-        <section className="relative w-full py-28 sm:py-36 bg-slate-950 overflow-hidden">
+        {/* 1. HERO BANNER SECTION (REDUCED TOP/BOTTOM PADDING TO py-12 sm:py-16) */}
+        <section className="relative w-full py-12 sm:py-16 bg-slate-950 overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center opacity-40 scale-105"
             style={{
@@ -54,31 +50,31 @@ export default function AboutPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-[#046A38]/70 to-slate-950" />
 
-          <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-8 text-center space-y-6">
+          <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-8 text-center space-y-5">
             <span className="bg-white/10 border border-white/20 text-amber-300 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-flex items-center space-x-1.5 shadow-lg">
               <Sparkles className="w-4 h-4" />
               <span>About Ecoensa Private Limited</span>
             </span>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-serif font-black text-white tracking-tight leading-tight max-w-5xl mx-auto drop-shadow-xl">
+            <h1 className="text-2xl sm:text-4xl lg:text-6xl font-serif font-black text-white tracking-tight leading-tight max-w-5xl mx-auto drop-shadow-xl">
               Pioneering Environmental Science & Sustainable Organic Living
             </h1>
 
-            <p className="text-base sm:text-xl text-slate-200 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+            <p className="text-sm sm:text-base text-slate-200 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-md">
               Founded by passionate ecologists and environmental scientists, Ecoensa bridges nature and wellness to deliver 100% pure organic food, spices, and environmental conservation solutions.
             </p>
 
-            <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
+            <div className="pt-3 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/shop"
-                className="bg-[#FF6B00] hover:bg-[#e05e00] text-white font-extrabold text-sm px-8 py-4 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-2"
+                className="bg-[#FF6B00] hover:bg-[#e05e00] text-white font-extrabold text-xs sm:text-sm px-7 py-3.5 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-2"
               >
                 <span>Explore Our Products</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/contact"
-                className="bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm px-8 py-4 rounded-full border border-white/30 backdrop-blur-md transition-all duration-300"
+                className="bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs sm:text-sm px-7 py-3.5 rounded-full border border-white/30 backdrop-blur-md transition-all duration-300"
               >
                 Contact Our Team
               </Link>
@@ -390,7 +386,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 🌟 NEW 2-COLUMN FAQ SECTION (LEFT IMAGE + RIGHT ACCORDION) */}
+        {/* 7. 2-COLUMN FAQ SECTION (LEFT IMAGE + RIGHT ACCORDION) */}
         <section className="py-16 sm:py-24 bg-white">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-8 space-y-12">
             
@@ -426,7 +422,7 @@ export default function AboutPage() {
 
                 {/* FLOATING BADGE */}
                 <div className="absolute -top-5 -right-2 sm:right-4 bg-slate-900 text-white p-4 rounded-2xl shadow-xl border border-white/20 flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#046A38] text-white flex items-center justify-center font-black">
+                  <div className="w-10 h-10 rounded-xl bg-[#046A38] text-[#FFFFFF] flex items-center justify-center font-black">
                     <HelpCircle className="w-5 h-5" />
                   </div>
                   <div>
