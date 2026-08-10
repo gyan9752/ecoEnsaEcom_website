@@ -1,57 +1,21 @@
 stages:
-  - build
   - deploy
 
 variables:
   SSH_USER: "girjeshwhats"
   SERVER_IP: "66.116.244.42"
   SSH_PORT: "22"
+
   APP_DIR: "/home/girjeshwhats/scriza/ecoensa/website"
   PM2_APP_NAME: "ecoensa-website"
 
 # =========================================================
-# BUILD STAGE
-# =========================================================
-
-build:
-  stage: build
-  image: node:20-alpine
-
-  before_script:
-    - echo "Starting Next.js Pipeline..."
-
-  script:
-    - echo "Removing old node_modules..."
-    - rm -rf node_modules
-
-    - echo "Installing dependencies..."
-    - npm ci
-
-    - echo "Building Next.js application..."
-    - npm run build
-
-  artifacts:
-    paths:
-      - .next/
-      - package.json
-      - package-lock.json
-      - next.config.js
-      - public/
-      - app/
-      - components/
-      - lib/
-      - hooks/
-      - tailwind.config.js
-      - postcss.config.js
-    expire_in: 1 hour
-
-
-# =========================================================
-# DEPLOY STAGE
+# DEPLOY
 # =========================================================
 
 deploy:
   stage: deploy
+
   image: alpine:latest
 
   before_script:
@@ -62,20 +26,23 @@ deploy:
     - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
 
-    # KNOWN HOSTS
+    # KNOWN HOST
     - touch ~/.ssh/known_hosts
     - ssh-keyscan -p "$SSH_PORT" -H "$SERVER_IP" >> ~/.ssh/known_hosts 2>/dev/null || true
 
   script:
 
     # =====================================================
-    # UPLOAD SOURCE FILES
+    # UPLOAD SOURCE
     # =====================================================
 
-    - echo "Uploading project files to server..."
+    - echo "======================================"
+    - echo "Uploading project files..."
+    - echo "======================================"
 
     - |
       rsync -avz \
+        --delete \
         --exclude='.git' \
         --exclude='node_modules' \
         --exclude='.next' \
@@ -100,7 +67,7 @@ deploy:
       PM2_APP_NAME="ecoensa-website"
 
       echo "======================================"
-      echo "Starting server deployment..."
+      echo "Starting Ecoensa deployment"
       echo "======================================"
 
       cd "$APP_DIR"
@@ -109,38 +76,47 @@ deploy:
       pwd
 
       echo "--------------------------------------"
-      echo "Removing old node_modules..."
+      echo "Node version"
+      echo "--------------------------------------"
+
+      node -v
+      npm -v
+
+      echo "--------------------------------------"
+      echo "Stopping PM2 application"
+      echo "--------------------------------------"
+
+      pm2 stop "$PM2_APP_NAME" || true
+
+      echo "--------------------------------------"
+      echo "Removing old node_modules"
       echo "--------------------------------------"
 
       rm -rf node_modules
 
       echo "--------------------------------------"
-      echo "Installing dependencies using npm ci..."
+      echo "Installing dependencies"
       echo "--------------------------------------"
 
       npm ci
 
       echo "--------------------------------------"
-      echo "Building Next.js application..."
+      echo "Building Next.js application"
       echo "--------------------------------------"
+
+      rm -rf .next
 
       npm run build
 
       echo "--------------------------------------"
-      echo "Checking PM2 application..."
+      echo "Starting PM2 application"
       echo "--------------------------------------"
 
       if pm2 describe "$PM2_APP_NAME" > /dev/null 2>&1; then
 
-        echo "Application already exists in PM2."
-        echo "Restarting $PM2_APP_NAME..."
-
         pm2 restart "$PM2_APP_NAME" --update-env
 
       else
-
-        echo "Application does not exist in PM2."
-        echo "Starting new application..."
 
         pm2 start npm \
           --name "$PM2_APP_NAME" \
@@ -149,25 +125,27 @@ deploy:
       fi
 
       echo "--------------------------------------"
-      echo "Saving PM2 configuration..."
-      echo "--------------------------------------"
-
-      pm2 save
-
-      echo "--------------------------------------"
-      echo "PM2 Status"
+      echo "Checking PM2 status"
       echo "--------------------------------------"
 
       pm2 status
 
       echo "--------------------------------------"
-      echo "Recent Application Logs"
+      echo "Checking application"
+      echo "--------------------------------------"
+
+      sleep 5
+
+      curl -f http://127.0.0.1:4010 || exit 1
+
+      echo "--------------------------------------"
+      echo "Recent logs"
       echo "--------------------------------------"
 
       pm2 logs "$PM2_APP_NAME" --lines 20 --nostream || true
 
       echo "======================================"
-      echo "Deployment completed successfully."
+      echo "Deployment completed successfully"
       echo "======================================"
 
       EOF
