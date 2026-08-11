@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Calendar, ArrowRight } from "lucide-react";

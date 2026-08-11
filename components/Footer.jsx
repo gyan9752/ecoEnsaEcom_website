@@ -23,7 +23,7 @@ export default function Footer() {
                 className="w-20 sm:w-24 h-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "/ecosenalogo.webp";
+                  e.target.src = "/logo.png";
                 }}
               />
             </Link>

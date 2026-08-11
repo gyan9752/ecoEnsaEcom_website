@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
@@ -526,7 +527,7 @@ export default async function NewsDetailPage({ params }) {
                   rel="noopener noreferrer"
                   className="block overflow-hidden rounded-2xl mb-3"
                 >
-                  <img
+                  <image
                     src={card1.imageUrl}
                     alt={card1.alt}
                     className="w-full h-auto object-cover hover:scale-105 transition-transform"
