@@ -24,7 +24,8 @@ export async function generateMetadata({ params }) {
 
   try {
     const res = await fetch(
-      `https://test.edu2all.in/blog/api/admin/categories?t=${Date.now()}`,
+      // `https://test.edu2all.in/blog/api/admin/categories?t=${Date.now()}`,
+            `https://moteligo.in/ecoback/api/admin/categories?t=${Date.now()}`,
       { cache: "no-store" },
     );
     const result = await res.json();
@@ -69,7 +70,8 @@ async function getAllNews() {
     let backendTotalPages = 1;
     do {
       const res = await fetch(
-        `https://test.edu2all.in/blog/api/blogs?page=${fetchPage}&t=${Date.now()}`,
+        // `https://test.edu2all.in/blog/api/blogs?page=${fetchPage}&t=${Date.now()}`,
+           `https://moteligo.in/ecoback/api/blogs?page=${fetchPage}&t=${Date.now()}`,
         { cache: "no-store" },
       );
       const result = await res.json();
@@ -92,7 +94,8 @@ async function getAllNews() {
 async function getCategories() {
   try {
     const res = await fetch(
-      `https://test.edu2all.in/blog/api/admin/categories?t=${Date.now()}`,
+      // `https://test.edu2all.in/blog/api/admin/categories?t=${Date.now()}`,
+         `https://moteligo.in/ecoback/api/admin/categories?t=${Date.now()}`,
       { cache: "no-store" },
     );
     const result = await res.json();
@@ -114,7 +117,8 @@ const formatDate = (dateString) => {
 const resolveImageUrl = (url) => {
   if (!url) return "/images/logo.png";
   if (url.startsWith("http")) return url;
-  return `https://test.edu2all.in/blog${url.startsWith("/") ? "" : "/"}${url}`;
+  // return `https://test.edu2all.in/blog${url.startsWith("/") ? "" : "/"}${url}`;
+     return `https://moteligo.in/ecoback${url.startsWith("/") ? "" : "/"}${url}`;
 };
 
 // Dynamic helper to extract Author Name from API string/email/object
@@ -215,9 +219,9 @@ export default async function NewsPage({ params }) {
       {/* ECOENSA HERO BANNER */}
       <div className="w-full bg-gradient-to-br from-emerald-950 via-[#046A38] to-slate-950 text-white py-12 sm:py-16 px-4 sm:px-8 text-center relative overflow-hidden shadow-md">
         <div className="relative z-20 max-w-[1400px] mx-auto w-full space-y-3">
-          <span className="text-xs font-black uppercase text-amber-300 bg-white/10 px-4 py-1.5 rounded-full inline-block border border-white/20 tracking-widest">
+          {/* <span className="text-xs font-black uppercase text-amber-300 bg-white/10 px-4 py-1.5 rounded-full inline-block border border-white/20 tracking-widest">
             🌿 Ecoensa Wellness Journal
-          </span>
+          </span> */}
           <h1 className="text-3xl sm:text-5xl font-serif font-black tracking-tight text-white">
             {activeCategory ? activeCategory.mainHeading : "Ecoensa Private Limited - Latest Blogs"}
           </h1>
