@@ -656,7 +656,6 @@
 
 
 
-
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -706,7 +705,7 @@ function ShopContent() {
 
   const { addToCart } = useCart();
 
-  /* Fetch live products and categories from backend API */
+  /* Fetch live products and categories from backend API (limit=1000) */
   useEffect(() => {
     async function fetchShopData() {
       try {
@@ -714,7 +713,7 @@ function ShopContent() {
 
         const [collectionsRes, productsRes] = await Promise.all([
           fetch(`${API_BASE}/api/collections/visible`),
-          fetch(`${API_BASE}/api/products/public`),
+          fetch(`${API_BASE}/api/products/public?limit=1000`),
         ]);
 
         const collectionsJson = await collectionsRes.json();

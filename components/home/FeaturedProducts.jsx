@@ -265,7 +265,6 @@
 
 
 
-
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -302,10 +301,10 @@ export default function FeaturedProducts() {
       try {
         setLoading(true);
 
-        /* Fetch collections & public products in parallel */
+        /* Fetch collections & ALL public products (limit=1000) in parallel */
         const [collectionsRes, productsRes] = await Promise.all([
           fetch(`${API_BASE}/api/collections/visible`),
-          fetch(`${API_BASE}/api/products/public`),
+          fetch(`${API_BASE}/api/products/public?limit=1000`),
         ]);
 
         const collectionsJson = await collectionsRes.json();
@@ -345,7 +344,7 @@ export default function FeaturedProducts() {
           };
         };
 
-        /* Group products into Category Sections (LIMIT TO 4 PRODUCTS PER ROW) */
+        /* Group products into Category Sections */
         const sections = [];
 
         if (collections.length > 0) {
@@ -359,20 +358,21 @@ export default function FeaturedProducts() {
               );
             });
 
-            if (matchedProducts.length > 0) {
+            /* ONLY INCLUDE CATEGORY IF IT HAS AT LEAST 4 PRODUCTS */
+            if (matchedProducts.length >= 4) {
               sections.push({
                 categoryTitle: col.heading || col.name,
                 categorySlug: `/shop?category=${col.slug || col._id}`,
 
-                /* EXACTLY MAX 4 PRODUCTS ON HOME PAGE */
+                /* EXACTLY 4 PRODUCTS FOR FULL 4-COLUMN ROW */
                 products: matchedProducts.slice(0, 4).map(transformProduct),
               });
             }
           });
         }
 
-        /* Fallback if no collections matched, group remaining products into one section (max 4) */
-        if (sections.length === 0 && products.length > 0) {
+        /* Fallback if no category has >= 4 products, pick top 4 from all products */
+        if (sections.length === 0 && products.length >= 4) {
           sections.push({
             categoryTitle: "Featured Products",
             categorySlug: "/shop",
@@ -380,7 +380,8 @@ export default function FeaturedProducts() {
           });
         }
 
-        setCategorySections(sections);
+        /* EXACTLY MAX 4 CATEGORY SECTIONS ON HOME PAGE */
+        setCategorySections(sections.slice(0, 4));
       } catch (err) {
         console.error("Failed to load featured products:", err);
       } finally {
