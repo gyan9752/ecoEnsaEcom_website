@@ -1,29 +1,249 @@
+// "use client";
+
+// import React, { createContext, useContext, useState, useEffect } from "react";
+
+// const CartContext = createContext();
+
+// export function CartProvider({ children }) {
+//   // React 19 Safe Lazy State Initialization (Zero Linter Warning & Zero Hydration Error)
+//   const [cartItems, setCartItems] = useState(() => {
+//     if (typeof window !== "undefined") {
+//       try {
+//         const saved = localStorage.getItem("ecoensa_cart");
+//         return saved ? JSON.parse(saved) : [];
+//       } catch (e) {
+//         console.error("Cart storage load error:", e);
+//         return [];
+//       }
+//     }
+//     return [];
+//   });
+
+  
+
+//   // Save to localStorage whenever cartItems updates
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       try {
+//         localStorage.setItem("ecoensa_cart", JSON.stringify(cartItems));
+//       } catch (e) {
+//         console.error("Cart storage save error:", e);
+//       }
+//     }
+//   }, [cartItems]);
+
+//   const addToCart = (product, quantity = 1, weight = "250g") => {
+//     setCartItems((prev) => {
+//       const existingIndex = prev.findIndex(
+//         (item) => item.id === product.id && item.weight === weight
+//       );
+//       if (existingIndex >= 0) {
+//         const updated = [...prev];
+//         updated[existingIndex].quantity += quantity;
+//         return updated;
+//       }
+//       return [...prev, { ...product, quantity, weight }];
+//     });
+//   };
+
+//   const removeFromCart = (id) => {
+//     setCartItems((prev) => prev.filter((item) => item.id !== id));
+//   };
+
+//   const updateQuantity = (id, delta) => {
+//     setCartItems((prev) =>
+//       prev
+//         .map((item) => {
+//           if (item.id === id) {
+//             const newQty = item.quantity + delta;
+//             return newQty > 0 ? { ...item, quantity: newQty } : null;
+//           }
+//           return item;
+//         })
+//         .filter(Boolean)
+//     );
+//   };
+
+//   const clearCart = () => setCartItems([]);
+
+//   const getCartCount = () =>
+//     cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+//   const getCartTotal = () =>
+//     cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+//   return (
+//     <CartContext.Provider
+//       value={{
+//         cartItems,
+//         addToCart,
+//         removeFromCart,
+//         updateQuantity,
+//         clearCart,
+//         getCartCount,
+//         getCartTotal,
+//       }}
+//     >
+//       {children}
+//     </CartContext.Provider>
+//   );
+// }
+
+// export const useCart = () => useContext(CartContext);
+
+
+
+
+
+
+
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 const CartContext = createContext();
 
+const API_BASE = "https://moteligo.in/ecoback";
+
+/* Token extractor from localStorage / sessionStorage */
+const getAuthToken = () => {
+  if (typeof window === "undefined") return null;
+  const extractToken = (raw) => {
+    if (!raw || raw === "null" || raw === "undefined") return null;
+    try {
+      const parsed = JSON.parse(raw);
+      if (typeof parsed === "string") return parsed;
+      if (parsed?.token) return parsed.token;
+      if (parsed?.authToken) return parsed.authToken;
+      if (parsed?.accessToken) return parsed.accessToken;
+      if (parsed?.data?.token) return parsed.data.token;
+    } catch {
+      // plain string
+    }
+    return String(raw).trim();
+  };
+
+  const keys = ["authToken", "token", "accessToken", "adminToken", "userToken", "jwt"];
+  for (const key of keys) {
+    const rawVal = localStorage.getItem(key) || sessionStorage.getItem(key);
+    const t = extractToken(rawVal);
+    if (t) return t;
+  }
+  return null;
+};
+
+/* Image URL resolver for Backblaze / S3 / Relative paths */
+const resolveImageUrl = (url) => {
+  if (!url) return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'><rect width='100%' height='100%' fill='%23E2E8F0'/><text x='50%' y='50%' font-size='20' font-weight='bold' fill='%23046A38' dominant-baseline='middle' text-anchor='middle'>Ecoensa Product</text></svg>";
+  if (url.startsWith("http")) return url;
+  const cleanBase = API_BASE.replace(/\/$/, "");
+  const cleanUrl = url.startsWith("/") ? url : `/${url}`;
+  return `${cleanBase}${cleanUrl}`;
+};
+
+/* Transforms backend cart item format into frontend component item format */
+const transformBackendItem = (item) => {
+  const p = item?.product || {};
+  const imgs = p.productImages || p.images || [];
+  const rawImg = typeof imgs[0] === "string" ? imgs[0] : imgs[0]?.image || imgs[0]?.url || p.productImage;
+  const imgUrl = resolveImageUrl(rawImg);
+
+  const discountVal = Number(p.discountPercentage ?? p.discount ?? 0) || 0;
+  const payable = Number(item?.price ?? p.payablePrice ?? p.originalPrice ?? 0) || 0;
+  const original = Number(p.originalPrice ?? item?.price ?? payable ?? 0) || payable;
+  const qty = Number(item?.quantity) || 1;
+
+  return {
+    itemId: item?._id, // Backend item id inside cart
+    id: p._id || p.id || item?._id,
+    productId: p._id || p.id,
+    slug: p.slug || p._id,
+    name: p.name || p.heading || "Ecoensa Product",
+    price: payable,
+    mrp: original,
+    discountVal,
+    quantity: qty,
+    weight: item?.variant?.value || "250g",
+    variant: item?.variant || null,
+    image: imgUrl,
+    rawProduct: p,
+  };
+};
+
 export function CartProvider({ children }) {
-  // React 19 Safe Lazy State Initialization (Zero Linter Warning & Zero Hydration Error)
+  // Lazy initial state for Guest Users (Auto-sanitized)
   const [cartItems, setCartItems] = useState(() => {
     if (typeof window !== "undefined") {
       try {
         const saved = localStorage.getItem("ecoensa_cart");
-        return saved ? JSON.parse(saved) : [];
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            return parsed
+              .map((item) => {
+                const p = Number(item?.price);
+                if (isNaN(p)) return null;
+                return {
+                  ...item,
+                  price: p,
+                  mrp: Number(item?.mrp) || p,
+                  quantity: Number(item?.quantity) || 1,
+                };
+              })
+              .filter(Boolean);
+          }
+        }
       } catch (e) {
         console.error("Cart storage load error:", e);
-        return [];
       }
     }
     return [];
   });
 
-  
+  const [loading, setLoading] = useState(true);
 
-  // Save to localStorage whenever cartItems updates
+  /* Fetch live cart function */
+  const fetchCart = useCallback(() => {
+    const token = getAuthToken();
+
+    if (token) {
+      fetch(`${API_BASE}/api/cart`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          if (json?.status && Array.isArray(json?.data?.items)) {
+            const formatted = json.data.items.map(transformBackendItem);
+            setCartItems(formatted);
+          }
+        })
+        .catch((err) => {
+          console.error("Backend cart fetch error:", err);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } else {
+      queueMicrotask(() => setLoading(false));
+    }
+  }, []);
+
+  /* Safe Effect hook */
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    const token = getAuthToken();
+    if (token) {
+      fetchCart();
+    } else {
+      queueMicrotask(() => setLoading(false));
+    }
+  }, [fetchCart]);
+
+  /* Save to localStorage for guest users */
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token && typeof window !== "undefined") {
       try {
         localStorage.setItem("ecoensa_cart", JSON.stringify(cartItems));
       } catch (e) {
@@ -32,54 +252,214 @@ export function CartProvider({ children }) {
     }
   }, [cartItems]);
 
-  const addToCart = (product, quantity = 1, weight = "250g") => {
+  /* ADD TO CART API (POST /api/cart/add OR GUEST FALLBACK) */
+  const addToCart = async (product, quantity = 1, weight = "250g") => {
+    if (!product) return;
+
+    const token = getAuthToken();
+    const targetProductId = product._id || product.id || product.productId || product.slug;
+
+    // UNIVERSAL PRICE & NAME EXTRACTOR
+    const rawPrice = product.payablePrice ?? product.price ?? product.originalPrice ?? 0;
+    const rawMrp = product.originalPrice ?? product.mrp ?? rawPrice;
+    const priceNum = Number(rawPrice) || 0;
+    const mrpNum = Number(rawMrp) || priceNum;
+
+    const pName = product.name || product.heading || "Organic Product";
+    const imgs = product.productImages || product.images || [];
+    const rawImg = typeof imgs[0] === "string" ? imgs[0] : imgs[0]?.image || imgs[0]?.url || product.image || product.productImage;
+    const imgUrl = resolveImageUrl(rawImg);
+
+    if (token && targetProductId) {
+      try {
+        const payload = {
+          productId: targetProductId,
+          quantity: quantity,
+          variant: {
+            variantId: product.variantId || "v1",
+            name: "Weight",
+            value: weight,
+          },
+        };
+
+        const res = await fetch(`${API_BASE}/api/cart/add`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const json = await res.json();
+        if (json?.status) {
+          fetchCart();
+          return;
+        }
+      } catch (err) {
+        console.error("API addToCart error:", err);
+      }
+    }
+
+    // Guest Fallback
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
-        (item) => item.id === product.id && item.weight === weight
+        (item) => (item.id === targetProductId || item.productId === targetProductId) && item.weight === weight
       );
       if (existingIndex >= 0) {
         const updated = [...prev];
         updated[existingIndex].quantity += quantity;
         return updated;
       }
-      return [...prev, { ...product, quantity, weight }];
+      return [
+        ...prev,
+        {
+          id: targetProductId,
+          productId: targetProductId,
+          slug: product.slug || targetProductId,
+          name: pName,
+          price: priceNum,
+          mrp: mrpNum,
+          quantity,
+          weight,
+          image: imgUrl,
+          rawProduct: product,
+        },
+      ];
     });
   };
 
-  const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  /* REMOVE SINGLE ITEM (DELETE /api/cart/item/:itemId) */
+  const removeFromCart = async (targetIdentifier) => {
+    const token = getAuthToken();
+    const foundItem = cartItems.find(
+      (item) => item.itemId === targetIdentifier || item.id === targetIdentifier || item.productId === targetIdentifier
+    );
 
-  const updateQuantity = (id, delta) => {
+    const itemId = foundItem?.itemId || targetIdentifier;
+
+    if (token && itemId) {
+      try {
+        const res = await fetch(`${API_BASE}/api/cart/item/${itemId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const json = await res.json();
+        if (json?.status) {
+          fetchCart();
+          return;
+        }
+      } catch (err) {
+        console.error("API removeFromCart error:", err);
+      }
+    }
+
+    // Guest Fallback
     setCartItems((prev) =>
-      prev
-        .map((item) => {
-          if (item.id === id) {
-            const newQty = item.quantity + delta;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
-          }
-          return item;
-        })
-        .filter(Boolean)
+      prev.filter((item) => item.itemId !== targetIdentifier && item.id !== targetIdentifier && item.productId !== targetIdentifier)
     );
   };
 
-  const clearCart = () => setCartItems([]);
+  /* UPDATE QUANTITY (PUT /api/cart/update-quantity) */
+  const updateQuantity = async (targetIdentifier, delta) => {
+    const token = getAuthToken();
+    const foundItem = cartItems.find(
+      (item) => item.itemId === targetIdentifier || item.id === targetIdentifier || item.productId === targetIdentifier
+    );
+
+    if (!foundItem) return;
+
+    const newQty = (Number(foundItem.quantity) || 1) + delta;
+
+    if (newQty <= 0) {
+      await removeFromCart(targetIdentifier);
+      return;
+    }
+
+    const itemId = foundItem.itemId;
+
+    if (token && itemId) {
+      try {
+        const res = await fetch(`${API_BASE}/api/cart/update-quantity`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            itemId: itemId,
+            quantity: newQty,
+          }),
+        });
+
+        const json = await res.json();
+        if (json?.status) {
+          fetchCart();
+          return;
+        }
+      } catch (err) {
+        console.error("API updateQuantity error:", err);
+      }
+    }
+
+    // Guest Fallback
+    setCartItems((prev) =>
+      prev.map((item) => {
+        if (item.itemId === targetIdentifier || item.id === targetIdentifier || item.productId === targetIdentifier) {
+          return { ...item, quantity: newQty };
+        }
+        return item;
+      })
+    );
+  };
+
+  /* CLEAR ENTIRE CART (DELETE /api/cart/clear) */
+  const clearCart = async () => {
+    const token = getAuthToken();
+
+    if (token) {
+      try {
+        const res = await fetch(`${API_BASE}/api/cart/clear`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const json = await res.json();
+        if (json?.status) {
+          setCartItems([]);
+          return;
+        }
+      } catch (err) {
+        console.error("API clearCart error:", err);
+      }
+    }
+
+    // Guest Fallback
+    setCartItems([]);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("ecoensa_cart");
+    }
+  };
 
   const getCartCount = () =>
-    cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    Array.isArray(cartItems) ? cartItems.reduce((acc, item) => acc + (Number(item?.quantity) || 0), 0) : 0;
 
   const getCartTotal = () =>
-    cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    Array.isArray(cartItems) ? cartItems.reduce((acc, item) => acc + (Number(item?.price) || 0) * (Number(item?.quantity) || 0), 0) : 0;
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
+        loading,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
+        fetchCart,
         getCartCount,
         getCartTotal,
       }}

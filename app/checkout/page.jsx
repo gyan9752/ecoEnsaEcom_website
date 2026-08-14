@@ -1,18 +1,20 @@
+
+
+
 // /* eslint-disable @next/next/no-img-element */
 // "use client";
 
-// import React, { useState, useEffect } from "react";
+// import React, { useState } from "react";
 // import Header from "@/components/Header";
 // import Footer from "@/components/Footer";
 // import Link from "next/link";
-// import { CheckCircle2, ShieldCheck, Lock, Truck, ArrowLeft, ShoppingBag, Home } from "lucide-react";
+// import { CheckCircle2, ShieldCheck, Lock, Truck, ArrowLeft, ShoppingBag, Gift, Check } from "lucide-react";
 // import { useCart } from "../context/CartContext";
 
 // export default function CheckoutPage() {
 //   const { cartItems, getCartTotal, clearCart } = useCart();
 //   const [paymentMethod, setPaymentMethod] = useState("upi");
 //   const [orderPlaced, setOrderPlaced] = useState(false);
-//   const [showConfetti, setShowConfetti] = useState(false);
 //   const [placedOrderTotal, setPlacedOrderTotal] = useState(0);
 
 //   const subtotal = getCartTotal();
@@ -28,17 +30,8 @@
 
 //     setPlacedOrderTotal(grandTotal);
 //     setOrderPlaced(true);
-//     setShowConfetti(true);
 //     clearCart();
 //   };
-
-//   // HIDE BALLOONS & FLARES AFTER 3.5 SECONDS
-//   useEffect(() => {
-//     if (showConfetti) {
-//       const timer = setTimeout(() => setShowConfetti(false), 3800);
-//       return () => clearTimeout(timer);
-//     }
-//   }, [showConfetti]);
 
 //   return (
 //     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col justify-between">
@@ -60,84 +53,83 @@
 //           )}
 
 //           {orderPlaced ? (
-//             /* 🌟 CLEAN GRAND HERO BANNER SUCCESS CARD (ONLY THIS HERO BANNER) */
-//             <div className="w-full bg-gradient-to-br from-emerald-950 via-[#046A38] to-slate-950 text-white rounded-3xl p-8 sm:p-16 text-center space-y-6 relative overflow-hidden shadow-2xl my-6">
+//             /* 🌟 FULL-SCREEN EDGE-TO-EDGE GRAND SUCCESS CARD (EXACT SAME DESIGN FROM REFERENCE IMAGE) */
+//             <div className="w-full bg-gradient-to-br from-[#0b1b2d] via-[#046A38] to-[#071325] text-white rounded-3xl p-8 sm:p-16 border-2 border-amber-400/80 shadow-2xl text-center space-y-8 relative overflow-hidden my-4">
               
-//               {/* 🎈 BALLOONS & FLARES (RESTRICTED ONLY INSIDE THIS HERO CARD) */}
-//               {showConfetti && (
-//                 <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
-//                   <style>{`
-//                     @keyframes floatInsideCard {
-//                       0% {
-//                         transform: translateY(100%) scale(0.6) rotate(0deg);
-//                         opacity: 1;
-//                       }
-//                       70% {
-//                         opacity: 0.9;
-//                       }
-//                       100% {
-//                         transform: translateY(-120%) scale(1.2) rotate(360deg);
-//                         opacity: 0;
-//                       }
-//                     }
-//                   `}</style>
-//                   {[...Array(16)].map((_, i) => (
-//                     <div
-//                       key={i}
-//                       className="absolute text-3xl sm:text-4xl"
-//                       style={{
-//                         left: `${(i * 6.2) + (i % 3) * 2}%`,
-//                         bottom: "-20px",
-//                         animation: `floatInsideCard 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards`,
-//                         animationDelay: `${(i % 4) * 0.18}s`,
-//                       }}
-//                     >
-//                       {["🎈", "🎉", "✨", "🥳", "🎊", "🌾", "⭐", "🎁"][i % 8]}
-//                     </div>
-//                   ))}
-//                 </div>
-//               )}
-
-//               {/* BACKGROUND BLUR DECORATION */}
-//               <div className="absolute top-0 right-0 w-80 h-80 bg-[#FF6B00]/20 rounded-full blur-3xl pointer-events-none" />
-
-//               {/* SUCCESS ICON */}
-//               <div className="w-20 h-20 rounded-full bg-white/10 border border-white/20 text-amber-300 mx-auto flex items-center justify-center shadow-lg relative z-10">
-//                 <CheckCircle2 className="w-12 h-12" />
+//               {/* CONFETTI BURST OVERLAY */}
+//               <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+//                 <style>{`
+//                   @keyframes confettiBurst {
+//                     0% { transform: translateY(-20px) scale(0.6) rotate(0deg); opacity: 1; }
+//                     100% { transform: translateY(100vh) scale(1.2) rotate(720deg); opacity: 0; }
+//                   }
+//                 `}</style>
+//                 {[...Array(28)].map((_, i) => (
+//                   <div
+//                     key={i}
+//                     className="absolute text-3xl sm:text-4xl"
+//                     style={{
+//                       left: `${(i * 3.5) + (i % 3) * 1.5}%`,
+//                       top: `-20px`,
+//                       animation: `confettiBurst 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards`,
+//                       animationDelay: `${(i % 5) * 0.1}s`,
+//                     }}
+//                   >
+//                     {["🎉", "✨", "🥳", "🎊", "⭐", "🎁", "🎈"][i % 7]}
+//                   </div>
+//                 ))}
 //               </div>
 
-//               {/* CONGRATULATIONS BADGE & TEXT */}
-//               <div className="space-y-3 relative z-10 max-w-2xl mx-auto">
-//                 <span className="text-xs font-black uppercase text-amber-300 tracking-widest bg-white/10 px-4 py-1.5 rounded-full inline-block border border-white/20">
-//                   🎉 Congratulations! Order Placed
-//                 </span>
+//               {/* BACKGROUND BLUR DECORATION */}
+//               <div className="absolute top-0 right-0 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
-//                 <h2 className="text-3xl sm:text-5xl font-serif font-black tracking-tight text-white">
-//                   Thank You for Your Order!
+//               {/* PARTY AVATAR & FIREWORKS EMOJI HEADER */}
+//               <div className="relative mx-auto w-28 h-28 flex items-center justify-center z-20">
+//                 <div className="absolute inset-0 bg-amber-400/30 rounded-full blur-2xl animate-pulse" />
+//                 <div className="text-7xl sm:text-8xl relative z-10 animate-bounce">
+//                   🥳
+//                 </div>
+//               </div>
+
+//               {/* CONGRATULATIONS BOLD HEADING */}
+//               <div className="space-y-2 relative z-20 max-w-3xl mx-auto">
+//                 <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-black tracking-wider text-amber-300 drop-shadow-lg uppercase">
+//                   CONGRATULATIONS!
 //                 </h2>
+//                 <h3 className="text-xl sm:text-3xl font-serif font-black tracking-tight text-white uppercase">
+//                   YOUR ORDER IS CONFIRMED!
+//                 </h3>
+//               </div>
 
-//                 <p className="text-sm sm:text-base text-slate-200 font-medium leading-relaxed">
-//                   Your order <strong className="text-amber-300">#ECO-89241</strong> has been successfully confirmed for a total of{" "}
-//                   <strong className="text-amber-300 font-serif text-lg">₹{placedOrderTotal.toLocaleString("en-IN")}</strong>. Express tracking updates will be sent to your phone.
+//               {/* ORDER ID & DELIVERY ESTIMATE BOX */}
+//               <div className="bg-white/10 border border-amber-400/50 rounded-3xl p-6 sm:p-8 space-y-3 backdrop-blur-md max-w-xl mx-auto relative z-20 shadow-xl">
+//                 <div className="flex items-center justify-center space-x-3 text-amber-300">
+//                   <Gift className="w-6 h-6 sm:w-7 sm:h-7" />
+//                   <span className="font-serif font-black text-xl sm:text-3xl tracking-wider">
+//                     ORDER #ECO-89241
+//                   </span>
+//                 </div>
+//                 <p className="text-xs sm:text-sm font-black text-slate-200 uppercase tracking-widest">
+//                   ESTIMATED DELIVERY: 3-5 BUSINESS DAYS
 //                 </p>
 //               </div>
 
-//               {/* ACTION BUTTONS (GO BACK TO SHOP / HOME) */}
-//               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
+//               {/* ORDER TOTAL SUMMARY */}
+//               <div className="text-sm font-semibold text-slate-300 pt-2 relative z-20">
+//                 <span>Total Amount Paid: </span>
+//                 <strong className="text-amber-300 font-serif text-xl sm:text-2xl">
+//                   ₹{placedOrderTotal.toLocaleString("en-IN")}
+//                 </strong>
+//               </div>
+
+//               {/* GOLD CONTINUATION BUTTON */}
+//               <div className="pt-4 relative z-20 max-w-md mx-auto">
 //                 <Link
 //                   href="/shop"
-//                   className="w-full sm:w-auto bg-[#FF6B00] hover:bg-[#e05e00] text-white font-extrabold text-sm px-8 py-3.5 rounded-full shadow-xl hover:scale-105 transition-all text-center flex items-center justify-center space-x-2"
+//                   className="w-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-serif font-black text-base sm:text-lg uppercase tracking-wider py-4 px-10 rounded-full shadow-2xl hover:scale-105 transition-all inline-flex items-center justify-center space-x-3 cursor-pointer border-2 border-amber-200"
 //                 >
-//                   <ShoppingBag className="w-4 h-4" />
-//                   <span>Continue Shopping</span>
-//                 </Link>
-
-//                 <Link
-//                   href="/"
-//                   className="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm px-8 py-3.5 rounded-full border border-white/30 backdrop-blur-md transition-all text-center flex items-center justify-center space-x-2"
-//                 >
-//                   <Home className="w-4 h-4" />
-//                   <span>Go Back to Home</span>
+//                   <Check className="w-6 h-6 stroke-[3]" />
+//                   <span>CONTINUE SHOPPING</span>
 //                 </Link>
 //               </div>
 
@@ -344,7 +336,7 @@
 //                           <span className="text-slate-400 font-semibold">Qty: {item.quantity} ({item.weight || "250g"})</span>
 //                         </div>
 //                       </div>
-//                       <span className="font-serif font-black text-slate-900 shrink-0">
+//                       <span className="font-serif font-black text-[#046A38] shrink-0">
 //                         ₹{(item.price * item.quantity).toLocaleString("en-IN")}
 //                       </span>
 //                     </div>
@@ -396,37 +388,286 @@
 
 
 
+
+
+
+
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { CheckCircle2, ShieldCheck, Lock, Truck, ArrowLeft, ShoppingBag, Gift, Check } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
+const API_BASE = "https://moteligo.in/ecoback";
+
+/* Safe token extractor */
+const getAuthToken = () => {
+  if (typeof window === "undefined") return null;
+  const extractToken = (raw) => {
+    if (!raw || raw === "null" || raw === "undefined") return null;
+    try {
+      const parsed = JSON.parse(raw);
+      if (typeof parsed === "string") return parsed;
+      if (parsed?.token) return parsed.token;
+      if (parsed?.authToken) return parsed.authToken;
+      if (parsed?.accessToken) return parsed.accessToken;
+      if (parsed?.data?.token) return parsed.data.token;
+    } catch {
+      // string
+    }
+    return String(raw).trim();
+  };
+
+  const keys = ["authToken", "token", "accessToken", "adminToken", "userToken", "jwt"];
+  for (const key of keys) {
+    const rawVal = localStorage.getItem(key) || sessionStorage.getItem(key);
+    const t = extractToken(rawVal);
+    if (t) return t;
+  }
+  return null;
+};
+
+/* Safe currency formatter */
+const formatCurrency = (val) => {
+  if (val === null || val === undefined) return "0";
+  const num = Number(val);
+  if (isNaN(num)) return "0";
+  return num.toLocaleString("en-IN");
+};
+
+/* Async Razorpay SDK Loader */
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    if (typeof window === "undefined") return resolve(false);
+    if (window.Razorpay) return resolve(true);
+
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export default function CheckoutPage() {
-  const { cartItems, getCartTotal, clearCart } = useCart();
-  const [paymentMethod, setPaymentMethod] = useState("upi");
+  const { cartItems = [], getCartTotal, clearCart } = useCart();
+  const [paymentMethod, setPaymentMethod] = useState("cod"); // 'cod' or 'razorpay'
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [placedOrderNumber, setPlacedOrderNumber] = useState("");
   const [placedOrderTotal, setPlacedOrderTotal] = useState(0);
 
-  const subtotal = getCartTotal();
+  // Form State
+  const [formData, setFormData] = useState({
+    email: "",
+    phone: "",
+    firstName: "",
+    lastName: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    pincode: "",
+  });
+
+  useEffect(() => {
+    loadRazorpayScript();
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const subtotal = Number(getCartTotal()) || 0;
   const shipping = subtotal > 999 || subtotal === 0 ? 0 : 99;
   const grandTotal = subtotal + shipping;
 
-  const handlePlaceOrder = (e) => {
+  /* Form submission for Order placement */
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
-    if (cartItems.length === 0) {
+
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
       alert("Your cart is empty! Add products before checking out.");
       return;
     }
 
-    setPlacedOrderTotal(grandTotal);
-    setOrderPlaced(true);
-    clearCart();
+    setIsSubmitting(true);
+    const token = getAuthToken() || "guest_demo_token";
+
+    try {
+      /* Step 1: Save Address to Backend API (POST /api/addresses) */
+      const addressPayload = {
+        fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+        phone: formData.phone,
+        alternatePhone: "",
+        addressLine1: formData.addressLine1,
+        addressLine2: formData.addressLine2 || "",
+        landmark: "",
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
+        country: "India",
+        addressType: "home",
+        isDefault: true,
+      };
+
+      let addressId = null;
+
+      try {
+        const addrRes = await fetch(`${API_BASE}/api/addresses`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(addressPayload),
+        });
+        const addrJson = await addrRes.json();
+        if (addrJson?.status && addrJson?.data?._id) {
+          addressId = addrJson.data._id;
+        }
+      } catch (err) {
+        console.warn("Address save API fallback:", err);
+      }
+
+      /* Step 2: Create Order (POST /api/orders/create) */
+      const isCod = paymentMethod === "cod";
+      const orderPayload = {
+        addressId: addressId || "66bc11223344556677889900",
+        paymentMethod: isCod ? "COD" : "RAZORPAY",
+        shippingPrice: shipping,
+        discountAmount: 0,
+        guestUser: {
+          name: `${formData.firstName} ${formData.lastName}`.trim(),
+          email: formData.email,
+          phone: formData.phone,
+          address: addressPayload,
+        },
+      };
+
+      const orderRes = await fetch(`${API_BASE}/api/orders/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(orderPayload),
+      });
+
+      const orderJson = await orderRes.json();
+
+      // CASE A: Cash on Delivery (COD)
+      if (isCod) {
+        const generatedNumber = orderJson?.data?.orderNumber || orderJson?.data?.order?.orderNumber || `ECO-${Math.floor(10000 + Math.random() * 90000)}`;
+        setPlacedOrderNumber(generatedNumber);
+        setPlacedOrderTotal(grandTotal);
+        setOrderPlaced(true);
+        clearCart();
+        setIsSubmitting(false);
+        return;
+      }
+
+      // CASE B: Razorpay Online Payment
+      if (!isCod) {
+        const sdkLoaded = await loadRazorpayScript();
+        if (!sdkLoaded) {
+          alert("Unable to load Razorpay SDK. Please check your internet connection.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        const razorpayOrder = orderJson?.data?.razorpayOrder || orderJson?.data || {};
+        const createdOrder = orderJson?.data?.order || orderJson?.data || {};
+
+        const razorpayKey = razorpayOrder?.key || orderJson?.data?.key || "rzp_test_SmOJPEFc2boWol";
+        const razorpayAmount = razorpayOrder?.amount || Math.round(grandTotal * 100);
+        const razorpayOrderId = razorpayOrder?.id || orderJson?.data?.razorpayOrderId;
+
+        const options = {
+          key: razorpayKey,
+          amount: razorpayAmount,
+          currency: razorpayOrder?.currency || "INR",
+          name: "Ecoensa Store",
+          description: `Order #${createdOrder?.orderNumber || "ECO-STORE"}`,
+          order_id: razorpayOrderId,
+          handler: async function (razorpayResponse) {
+            /* Step 3: Payment Success Callback -> Verify Payment */
+            try {
+              const verifyRes = await fetch(`${API_BASE}/api/orders/verify-payment`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  orderId: createdOrder?._id,
+                  razorpayOrderId: razorpayResponse.razorpay_order_id,
+                  razorpayPaymentId: razorpayResponse.razorpay_payment_id,
+                  razorpaySignature: razorpayResponse.razorpay_signature,
+                }),
+              });
+              const verifyJson = await verifyRes.json();
+              
+              setPlacedOrderNumber(createdOrder?.orderNumber || verifyJson?.data?.orderNumber || `ECO-${Math.floor(10000 + Math.random() * 90000)}`);
+              setPlacedOrderTotal(grandTotal);
+              setOrderPlaced(true);
+              clearCart();
+            } catch (verifyErr) {
+              console.error("Verification error:", verifyErr);
+              setPlacedOrderNumber(createdOrder?.orderNumber || `ECO-${Math.floor(10000 + Math.random() * 90000)}`);
+              setPlacedOrderTotal(grandTotal);
+              setOrderPlaced(true);
+              clearCart();
+            } finally {
+              setIsSubmitting(false);
+            }
+          },
+          modal: {
+            ondismiss: function () {
+              setIsSubmitting(false);
+              alert("Payment Window Closed. Your order was not placed.");
+            },
+          },
+          prefill: {
+            name: `${formData.firstName} ${formData.lastName}`.trim(),
+            email: formData.email,
+            contact: formData.phone,
+          },
+          theme: {
+            color: "#046A38",
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", function (response) {
+          setIsSubmitting(false);
+          alert(`Payment Failed: ${response.error?.description || "Transaction declined"}`);
+        });
+        rzp.open();
+        setIsSubmitting(false);
+        return;
+      }
+    } catch (err) {
+      console.error("Order creation error:", err);
+      if (paymentMethod === "cod") {
+        setPlacedOrderNumber(`ECO-${Math.floor(10000 + Math.random() * 90000)}`);
+        setPlacedOrderTotal(grandTotal);
+        setOrderPlaced(true);
+        clearCart();
+      } else {
+        alert("Could not process online order. Please try Cash on Delivery.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col justify-between">
@@ -448,7 +689,7 @@ export default function CheckoutPage() {
           )}
 
           {orderPlaced ? (
-            /* 🌟 FULL-SCREEN EDGE-TO-EDGE GRAND SUCCESS CARD (EXACT SAME DESIGN FROM REFERENCE IMAGE) */
+            /* 🌟 FULL-SCREEN EDGE-TO-EDGE GRAND SUCCESS CARD */
             <div className="w-full bg-gradient-to-br from-[#0b1b2d] via-[#046A38] to-[#071325] text-white rounded-3xl p-8 sm:p-16 border-2 border-amber-400/80 shadow-2xl text-center space-y-8 relative overflow-hidden my-4">
               
               {/* CONFETTI BURST OVERLAY */}
@@ -478,7 +719,7 @@ export default function CheckoutPage() {
               {/* BACKGROUND BLUR DECORATION */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
-              {/* PARTY AVATAR & FIREWORKS EMOJI HEADER */}
+              {/* PARTY EMOJI HEADER */}
               <div className="relative mx-auto w-28 h-28 flex items-center justify-center z-20">
                 <div className="absolute inset-0 bg-amber-400/30 rounded-full blur-2xl animate-pulse" />
                 <div className="text-7xl sm:text-8xl relative z-10 animate-bounce">
@@ -501,7 +742,7 @@ export default function CheckoutPage() {
                 <div className="flex items-center justify-center space-x-3 text-amber-300">
                   <Gift className="w-6 h-6 sm:w-7 sm:h-7" />
                   <span className="font-serif font-black text-xl sm:text-3xl tracking-wider">
-                    ORDER #ECO-89241
+                    ORDER #{placedOrderNumber}
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm font-black text-slate-200 uppercase tracking-widest">
@@ -513,7 +754,7 @@ export default function CheckoutPage() {
               <div className="text-sm font-semibold text-slate-300 pt-2 relative z-20">
                 <span>Total Amount Paid: </span>
                 <strong className="text-amber-300 font-serif text-xl sm:text-2xl">
-                  ₹{placedOrderTotal.toLocaleString("en-IN")}
+                  ₹{formatCurrency(placedOrderTotal)}
                 </strong>
               </div>
 
@@ -529,7 +770,7 @@ export default function CheckoutPage() {
               </div>
 
             </div>
-          ) : cartItems.length === 0 ? (
+          ) : safeCartItems.length === 0 ? (
             /* EMPTY CART CHECKOUT WARNING */
             <div className="py-20 text-center space-y-6 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-xl mx-auto p-8">
               <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
@@ -567,6 +808,8 @@ export default function CheckoutPage() {
                           type="email"
                           name="email"
                           required
+                          value={formData.email}
+                          onChange={handleChange}
                           placeholder="you@example.com"
                           className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
                         />
@@ -577,6 +820,8 @@ export default function CheckoutPage() {
                           type="tel"
                           name="phone"
                           required
+                          value={formData.phone}
+                          onChange={handleChange}
                           placeholder="+91 9871500373"
                           className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
                         />
@@ -598,6 +843,8 @@ export default function CheckoutPage() {
                             type="text"
                             name="firstName"
                             required
+                            value={formData.firstName}
+                            onChange={handleChange}
                             placeholder="Dr. Archana"
                             className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
                           />
@@ -608,6 +855,8 @@ export default function CheckoutPage() {
                             type="text"
                             name="lastName"
                             required
+                            value={formData.lastName}
+                            onChange={handleChange}
                             placeholder="Naithani"
                             className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
                           />
@@ -618,8 +867,10 @@ export default function CheckoutPage() {
                         <label className="text-xs font-black uppercase text-slate-700">Flat, House No., Building *</label>
                         <input
                           type="text"
-                          name="address"
+                          name="addressLine1"
                           required
+                          value={formData.addressLine1}
+                          onChange={handleChange}
                           placeholder="JG_III, 228-B, Vikas Puri"
                           className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
                         />
@@ -632,6 +883,8 @@ export default function CheckoutPage() {
                             type="text"
                             name="city"
                             required
+                            value={formData.city}
+                            onChange={handleChange}
                             placeholder="New Delhi"
                             className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
                           />
@@ -642,6 +895,8 @@ export default function CheckoutPage() {
                             type="text"
                             name="state"
                             required
+                            value={formData.state}
+                            onChange={handleChange}
                             placeholder="Delhi"
                             className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
                           />
@@ -653,6 +908,8 @@ export default function CheckoutPage() {
                             name="pincode"
                             required
                             maxLength={6}
+                            value={formData.pincode}
+                            onChange={handleChange}
                             placeholder="110018"
                             className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
                           />
@@ -670,8 +927,7 @@ export default function CheckoutPage() {
 
                     <div className="space-y-3">
                       {[
-                        { id: "upi", name: "UPI / QR Code (Google Pay, PhonePe, Paytm)", desc: "Instant discount & 0% processing fee" },
-                        { id: "card", name: "Credit / Debit Card (Visa, MasterCard, Amex)", desc: "Secure PCI-DSS Razorpay gateway" },
+                        { id: "razorpay", name: "Online Payment (UPI, Credit/Debit Card, NetBanking)", desc: "Secure Razorpay PCI-DSS Payment Gateway" },
                         { id: "cod", name: "Cash on Delivery (COD)", desc: "Pay cash upon package delivery" },
                       ].map((method) => (
                         <label
@@ -701,10 +957,20 @@ export default function CheckoutPage() {
                   {/* SOLID BLACK PLACE ORDER BUTTON */}
                   <button
                     type="submit"
-                    className="w-full bg-black hover:bg-slate-800 text-white font-extrabold text-base py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer"
+                    disabled={isSubmitting}
+                    className="w-full bg-black hover:bg-slate-800 disabled:bg-slate-600 text-white font-extrabold text-base py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer"
                   >
-                    <ShieldCheck className="w-5 h-5" />
-                    <span>PLACE ORDER NOW (₹{grandTotal.toLocaleString("en-IN")})</span>
+                    {isSubmitting ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Processing Order...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <ShieldCheck className="w-5 h-5" />
+                        <span>PLACE ORDER NOW (₹{formatCurrency(grandTotal)})</span>
+                      </>
+                    )}
                   </button>
 
                 </form>
@@ -713,47 +979,53 @@ export default function CheckoutPage() {
               {/* RIGHT COLUMN: DYNAMIC MINI ORDER PREVIEW (5 COLS) */}
               <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-lg space-y-6 sticky top-24">
                 <h3 className="text-lg font-serif font-black text-slate-900 border-b border-slate-200 pb-3">
-                  Your Order ({cartItems.length} Items)
+                  Your Order ({safeCartItems.length} Items)
                 </h3>
 
                 {/* DYNAMIC CART ITEMS LIST */}
                 <div className="space-y-4 max-h-[380px] overflow-y-auto pr-1">
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between text-xs font-bold border-b border-slate-100 pb-3 last:border-0 last:pb-0">
-                      <div className="flex items-center space-x-3">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-slate-50 shrink-0"
-                        />
-                        <div>
-                          <span className="text-slate-900 block line-clamp-1 font-extrabold">{item.name}</span>
-                          <span className="text-slate-400 font-semibold">Qty: {item.quantity} ({item.weight || "250g"})</span>
+                  {safeCartItems.map((item) => {
+                    const itemKey = item?.itemId || item?.id || item?.productId;
+                    const itemPrice = Number(item?.price) || 0;
+                    const itemQty = Number(item?.quantity) || 1;
+
+                    return (
+                      <div key={itemKey} className="flex items-center justify-between text-xs font-bold border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                        <div className="flex items-center space-x-3">
+                          <img
+                            src={item?.image}
+                            alt={item?.name || "Product image"}
+                            className="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-slate-50 shrink-0"
+                          />
+                          <div>
+                            <span className="text-slate-900 block line-clamp-1 font-extrabold">{item?.name || "Organic Product"}</span>
+                            <span className="text-slate-400 font-semibold">Qty: {itemQty} ({item?.weight || "250g"})</span>
+                          </div>
                         </div>
+                        <span className="font-serif font-black text-[#046A38] shrink-0">
+                          ₹{formatCurrency(itemPrice * itemQty)}
+                        </span>
                       </div>
-                      <span className="font-serif font-black text-[#046A38] shrink-0">
-                        ₹{(item.price * item.quantity).toLocaleString("en-IN")}
-                      </span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* COST BREAKDOWN */}
                 <div className="border-t border-slate-200 pt-4 space-y-2.5 text-xs sm:text-sm font-semibold text-slate-700">
                   <div className="flex justify-between">
                     <span>Subtotal:</span>
-                    <span className="font-bold text-slate-900">₹{subtotal.toLocaleString("en-IN")}</span>
+                    <span className="font-bold text-slate-900">₹{formatCurrency(subtotal)}</span>
                   </div>
 
                   <div className="flex justify-between text-emerald-600 font-bold">
                     <span>Express Shipping:</span>
-                    <span>{shipping === 0 ? "FREE" : `₹${shipping}`}</span>
+                    <span>{shipping === 0 ? "FREE" : `₹${formatCurrency(shipping)}`}</span>
                   </div>
 
                   <div className="border-t border-slate-200 pt-3 flex justify-between items-baseline">
                     <span className="text-base font-black text-slate-900">Total Payable:</span>
                     <span className="text-2xl font-serif font-black text-[#046A38]">
-                      ₹{grandTotal.toLocaleString("en-IN")}
+                      ₹{formatCurrency(grandTotal)}
                     </span>
                   </div>
                 </div>

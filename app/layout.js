@@ -1,5 +1,6 @@
 import "./globals.css";
 import { CartProvider } from "@/app/context/CartContext";
+import FloatingCartBar from "@/components/FloatingCartBar";
 
 export const metadata = {
   title: "Ecoensa - Pure Organic Living & Sustainable Products",
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
       <body className="antialiased">
         <CartProvider>
           {children}
+           <FloatingCartBar />
         </CartProvider>
       </body>
     </html>
