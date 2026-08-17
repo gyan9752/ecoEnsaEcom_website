@@ -1,0 +1,338 @@
+// /* eslint-disable @next/next/no-img-element */
+// "use client";
+
+// import React, { useState } from "react";
+// import Header from "@/components/Header";
+// import Footer from "@/components/Footer";
+// import Link from "next/link";
+// import { useSearchParams } from "next/navigation";
+// import { Mail, Lock, Leaf, ArrowRight } from "lucide-react";
+// import { useAuth } from "../context/AuthContext";
+
+// export default function LoginPage() {
+//   const { login } = useAuth();
+//   const searchParams = useSearchParams();
+//   const redirectPath = searchParams.get("redirect") || "/shop";
+
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [submitting, setSubmitting] = useState(false);
+//   const [errorMsg, setErrorMsg] = useState("");
+//   const [successMsg, setSuccessMsg] = useState("");
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setSubmitting(true);
+//     setErrorMsg("");
+//     setSuccessMsg("");
+
+//     const res = await login(email, password);
+//     setSubmitting(false);
+
+//     if (res.success) {
+//       setSuccessMsg("Login successful! Redirecting...");
+//       setTimeout(() => {
+//         window.location.href = redirectPath;
+//       }, 800);
+//     } else {
+//       setErrorMsg(res.message);
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col justify-between">
+//       <Header />
+
+//       <main className="flex-grow pt-10 pb-20 flex items-center justify-center px-4">
+//         <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200/90 overflow-hidden">
+          
+//           {/* HEADER BRAND BANNER */}
+//           <div className="bg-gradient-to-r from-[#046A38] via-[#057a41] to-[#046A38] text-white p-8 text-center relative">
+//             <div className="w-16 h-16 bg-white/10 rounded-2xl border border-white/20 flex items-center justify-center mx-auto mb-3 backdrop-blur-md shadow-inner">
+//               <Leaf className="w-8 h-8 text-amber-300 animate-bounce" />
+//             </div>
+
+//             <h1 className="text-2xl sm:text-3xl font-serif font-black tracking-tight">
+//               Welcome Back
+//             </h1>
+//             <p className="text-xs text-emerald-100 font-medium mt-1">
+//               Sign in to manage your cart, track orders & faster checkout
+//             </p>
+//           </div>
+
+//           {/* FORM BODY */}
+//           <div className="p-6 sm:p-8 space-y-6">
+//             {errorMsg && (
+//               <div className="bg-red-50 text-red-700 text-xs font-extrabold p-4 rounded-2xl border border-red-200 text-center">
+//                 {errorMsg}
+//               </div>
+//             )}
+
+//             {successMsg && (
+//               <div className="bg-emerald-50 text-[#046A38] text-xs font-extrabold p-4 rounded-2xl border border-emerald-200 text-center">
+//                 {successMsg}
+//               </div>
+//             )}
+
+//             <form onSubmit={handleSubmit} className="space-y-4">
+//               <div className="space-y-1">
+//                 <label className="text-xs font-black uppercase text-slate-700">Email Address</label>
+//                 <div className="relative">
+//                   <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+//                   <input
+//                     type="email"
+//                     required
+//                     value={email}
+//                     onChange={(e) => setEmail(e.target.value)}
+//                     placeholder="jane@example.com"
+//                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
+//                   />
+//                 </div>
+//               </div>
+
+//               <div className="space-y-1">
+//                 <div className="flex justify-between items-center">
+//                   <label className="text-xs font-black uppercase text-slate-700">Password</label>
+//                   <Link href="/forgot-password" className="text-xs text-[#FF6B00] font-extrabold hover:underline">
+//                     Forgot Password?
+//                   </Link>
+//                 </div>
+//                 <div className="relative">
+//                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+//                   <input
+//                     type="password"
+//                     required
+//                     value={password}
+//                     onChange={(e) => setPassword(e.target.value)}
+//                     placeholder="••••••••"
+//                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
+//                   />
+//                 </div>
+//               </div>
+
+//               <button
+//                 type="submit"
+//                 disabled={submitting}
+//                 className="w-full bg-[#046A38] hover:bg-[#03542c] disabled:bg-slate-400 text-white font-extrabold text-sm py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center space-x-2 cursor-pointer mt-2"
+//               >
+//                 {submitting ? (
+//                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+//                 ) : (
+//                   <>
+//                     <span>Sign In to Account</span>
+//                     <ArrowRight className="w-4 h-4" />
+//                   </>
+//                 )}
+//               </button>
+//             </form>
+
+//             <div className="text-center border-t border-slate-100 pt-4">
+//               <p className="text-xs font-semibold text-slate-600">
+//                 Don’t have an Ecoensa account yet?{" "}
+//                 <Link href="/signup" className="text-[#FF6B00] font-extrabold hover:underline">
+//                   Create Account Here
+//                 </Link>
+//               </p>
+//             </div>
+//           </div>
+
+//         </div>
+//       </main>
+
+//       <Footer />
+//     </div>
+//   );
+// }
+
+
+
+
+/* eslint-disable @next/next/no-img-element */
+"use client";
+
+import React, { useState } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Mail, Lock, Leaf, ArrowRight, ShieldCheck } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+
+export default function LoginPage() {
+  const { login } = useAuth();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") || "/shop";
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    const res = await login(email, password);
+    setSubmitting(false);
+
+    if (res.success) {
+      setSuccessMsg("Login successful! Redirecting...");
+      setTimeout(() => {
+        window.location.href = redirectPath;
+      }, 800);
+    } else {
+      setErrorMsg(res.message);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-100 font-sans text-slate-900 flex flex-col justify-between">
+      <Header />
+
+      <main className="flex-grow pt-8 sm:pt-12 pb-20 flex items-center justify-center px-4">
+        {/* FLIPKART STYLE 2-COLUMN SPLIT CONTAINER */}
+        <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[520px]">
+          
+          {/* LEFT COLUMN: THEME BRAND BANNER (5 COLS - 40% WIDTH) */}
+          <div className="md:col-span-5 bg-gradient-to-b from-[#046A38] via-[#03542c] to-[#0b2918] text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+            
+            {/* BACKGROUND ORGANIC PATTERN GLOW */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="space-y-4 relative z-10">
+              <div className="w-12 h-12 bg-white/10 rounded-2xl border border-white/20 flex items-center justify-center backdrop-blur-md">
+                <Leaf className="w-6 h-6 text-amber-300" />
+              </div>
+
+              <div className="space-y-2">
+                <h1 className="text-2xl sm:text-3xl font-serif font-black tracking-tight leading-tight">
+                  Login to Ecoensa
+                </h1>
+                <p className="text-xs sm:text-sm text-emerald-100/90 font-medium leading-relaxed">
+                  Get access to your Orders, Wishlist and Pure Organic Recommendations
+                </p>
+              </div>
+            </div>
+
+            {/* BOTTOM ORGANIC UNSPLASH IMAGE GRAPHIC */}
+            <div className="pt-6 relative z-10">
+              <div className="rounded-2xl overflow-hidden border border-white/20 shadow-xl bg-black/20 backdrop-blur-xs">
+                <img
+                  src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=800&auto=format&fit=crop"
+                  alt="Pure Organic Spices"
+                  className="w-full h-36 sm:h-44 object-cover opacity-90 hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: CLEAN FORM SECTION (7 COLS - 60% WIDTH) */}
+          <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-between bg-white space-y-6">
+            
+            <div className="space-y-6">
+              {errorMsg && (
+                <div className="bg-red-50 text-red-700 text-xs font-extrabold p-4 rounded-2xl border border-red-200 text-center">
+                  {errorMsg}
+                </div>
+              )}
+
+              {successMsg && (
+                <div className="bg-emerald-50 text-[#046A38] text-xs font-extrabold p-4 rounded-2xl border border-emerald-200 text-center">
+                  {successMsg}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-700">
+                    Email Address *
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="user@example.com"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-black uppercase tracking-wider text-slate-700">
+                      Password *
+                    </label>
+                    <Link href="/forgot-password" className="text-xs text-[#FF6B00] font-extrabold hover:underline">
+                      Forgot Password?
+                    </Link>
+                  </div>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                    <input
+                      type="password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* TERMS DISCLAIMER */}
+                <p className="text-[11px] text-slate-500 font-medium leading-normal">
+                  By continuing, you agree to Ecoensa’s{" "}
+                  <Link href="/terms-of-service" className="text-[#046A38] font-bold hover:underline">
+                    Terms of Use
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/privacy-policy" className="text-[#046A38] font-bold hover:underline">
+                    Privacy Policy
+                  </Link>.
+                </p>
+
+                {/* FLIPKART STYLE BOLD CTA BUTTON */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full bg-[#FF6B00] hover:bg-[#e05e00] disabled:bg-slate-400 text-white font-serif font-black text-sm py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center space-x-2 cursor-pointer uppercase tracking-wider"
+                >
+                  {submitting ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span>CONTINUE TO SIGN IN</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* BOTTOM REDIRECT TO SIGNUP */}
+            <div className="pt-4 border-t border-slate-100 text-center">
+              <Link
+                href="/signup"
+                className="w-full bg-slate-50 hover:bg-slate-100 text-[#046A38] font-extrabold text-xs py-3.5 px-4 rounded-xl border border-slate-200 transition-all inline-block shadow-xs"
+              >
+                New to Ecoensa? Create an account
+              </Link>
+            </div>
+
+          </div>
+
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

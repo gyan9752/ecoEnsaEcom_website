@@ -1,11 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React from "react";
+import React, { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ShoppingBag, ArrowRight, Sparkles } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
+
+const emptySubscribe = () => () => {};
+function useHasMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+}
 
 const formatCurrency = (val) => {
   if (val === null || val === undefined) return "0";
@@ -15,8 +24,12 @@ const formatCurrency = (val) => {
 };
 
 export default function FloatingCartBar() {
+  const mounted = useHasMounted();
   const pathname = usePathname();
   const { cartItems = [], getCartCount, getCartTotal } = useCart();
+
+  // Prevent SSR Hydration Mismatch
+  if (!mounted) return null;
 
   const count = getCartCount();
   const total = getCartTotal();

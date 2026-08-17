@@ -1,13 +1,19 @@
+
+
+
+
 // /* eslint-disable @next/next/no-img-element */
 // "use client";
 
 // import React, { useState, useSyncExternalStore } from "react";
 // import Link from "next/link";
 // import { usePathname } from "next/navigation";
-// import { ShoppingBag, Menu, X } from "lucide-react";
+// import { ShoppingBag, Menu, X, User, LogOut, ChevronDown } from "lucide-react";
 // import { useCart } from "@/app/context/CartContext";
+// import { useAuth } from "@/app/context/AuthContext";
+// import AuthModal from "@/components/AuthModal";
 
-// // React 19 Safe Hook (Zero Linter Warning & Zero Hydration Error)
+// // React 19 Safe Hook
 // const emptySubscribe = () => () => {};
 // function useHasMounted() {
 //   return useSyncExternalStore(
@@ -19,13 +25,15 @@
 
 // export default function Header() {
 //   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+//   const [authModalOpen, setAuthModalOpen] = useState(false);
+//   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
 //   const mounted = useHasMounted();
-  
 //   const pathname = usePathname();
-//   const { getCartCount, getCartTotal } = useCart();
+//   const { getCartCount } = useCart();
+//   const { user, logout } = useAuth();
 
 //   const cartCount = getCartCount();
-//   const cartTotal = getCartTotal();
 
 //   const navLinks = [
 //     { name: "Home", href: "/" },
@@ -39,7 +47,7 @@
 //       {/* GLOBAL 1400PX CONTAINER */}
 //       <div className="max-w-[1400px] mx-auto px-4 sm:px-8 flex items-center justify-between">
         
-//         {/* CLEAN DIRECT LOGO (NO GREEN CIRCLE WRAPPER) */}
+//         {/* LEFT LOGO */}
 //         <Link href="/" className="flex items-center shrink-0">
 //           <img
 //             src="/images/logo.png"
@@ -48,51 +56,117 @@
 //           />
 //         </Link>
 
-//         {/* CENTER NAV LINKS */}
-//         <nav className="hidden md:flex items-center space-x-10">
-//           {navLinks.map((link) => {
-//             const isActive = pathname === link.href;
+//         {/* RIGHT GROUP: NAV LINKS NEAR CART & AUTH BUTTON */}
+//         <div className="hidden md:flex items-center space-x-8">
+//           <nav className="flex items-center space-x-7">
+//             {navLinks.map((link) => {
+//               const isActive = pathname === link.href;
 
-//             return (
-//               <Link
-//                 key={link.name}
-//                 href={link.href}
-//                 className={`text-sm sm:text-base font-extrabold transition-colors duration-200 ${
-//                   isActive ? "text-[#046A38]" : "text-slate-700 hover:text-[#FF6B00]"
-//                 }`}
+//               return (
+//                 <Link
+//                   key={link.name}
+//                   href={link.href}
+//                   className={`text-sm sm:text-base font-extrabold transition-all py-1 ${
+//                     isActive
+//                       ? "text-[#046A38] border-b-2 border-[#046A38]"
+//                       : "text-slate-700 hover:text-[#FF6B00]"
+//                   }`}
+//                 >
+//                   {link.name}
+//                 </Link>
+//               );
+//             })}
+//           </nav>
+
+//           {/* USER AUTH BUTTON / DROPDOWN */}
+//           {mounted && user ? (
+//             <div className="relative">
+//               <button
+//                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+//                 className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#046A38] transition-all cursor-pointer"
 //               >
-//                 {link.name}
-//               </Link>
-//             );
-//           })}
-//         </nav>
-
-//         {/* RIGHT CART BUTTON */}
-//         <div className="hidden md:flex items-center space-x-4 shrink-0">
-//           <Link
-//             href="/cart"
-//             className="flex items-center space-x-2.5 text-white hover:bg-[#FF6B00] font-black text-base sm:text-lg transition-all bg-[#046A38] px-5 py-2.5 rounded-full shadow-md hover:scale-105"
-//           >
-//             <span>₹{mounted ? cartTotal.toFixed(2) : "0.00"}</span>
-//             <div className="relative flex items-center">
-//               <ShoppingBag className="w-5 h-5 text-white" />
-//               {mounted && cartCount > 0 && (
-//                 <span className="absolute -top-2 -right-2.5 bg-[#FF6B00] text-white text-[10px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center border border-white">
-//                   {cartCount}
+//                 <div className="w-7 h-7 rounded-full bg-[#046A38] text-white flex items-center justify-center text-xs font-black uppercase">
+//                   {user.name ? user.name.charAt(0) : "U"}
+//                 </div>
+//                 <span className="text-xs font-extrabold max-w-[90px] truncate">
+//                   {user.name || "My Profile"}
 //                 </span>
+//                 <ChevronDown className="w-3.5 h-3.5" />
+//               </button>
+
+//               {/* USER DROPDOWN MENU */}
+//               {userDropdownOpen && (
+//                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 text-xs font-extrabold space-y-1">
+//                   <div className="px-4 py-2 border-b border-slate-100 space-y-0.5">
+//                     <p className="text-slate-900 truncate">{user.name}</p>
+//                     <p className="text-[10px] text-slate-400 font-semibold truncate">{user.email}</p>
+//                   </div>
+
+//                   <button
+//                     onClick={() => {
+//                       logout();
+//                       setUserDropdownOpen(false);
+//                     }}
+//                     className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center space-x-2 cursor-pointer transition-colors"
+//                   >
+//                     <LogOut className="w-4 h-4" />
+//                     <span>Logout</span>
+//                   </button>
+//                 </div>
 //               )}
 //             </div>
+//           ) : (
+//             <button
+//               onClick={() => setAuthModalOpen(true)}
+//               className="flex items-center space-x-1.5 text-xs font-extrabold px-4 py-2 rounded-full border border-slate-300 hover:border-[#046A38] text-slate-700 hover:text-[#046A38] bg-slate-50 hover:bg-emerald-50/50 transition-all cursor-pointer"
+//             >
+//               <User className="w-4 h-4 text-[#046A38]" />
+//               <span>Login / Sign In</span>
+//             </button>
+//           )}
+
+//           {/* DESKTOP CART BUTTON */}
+//           <Link
+//             href="/cart"
+//             className="relative flex items-center justify-center p-2.5 text-white bg-[#046A38] hover:bg-[#FF6B00] rounded-full shadow-md transition-all hover:scale-105 cursor-pointer"
+//           >
+//             <ShoppingBag className="w-5 h-5 text-white" />
+//             {mounted && cartCount > 0 && (
+//               <span className="absolute -top-1.5 -right-1.5 bg-[#FF6B00] text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-xs">
+//                 {cartCount}
+//               </span>
+//             )}
 //           </Link>
 //         </div>
 
-//         {/* MOBILE MENU TOGGLE */}
-//         <div className="flex items-center space-x-3 md:hidden">
+//         {/* MOBILE HEADER TOP RIGHT */}
+//         <div className="flex items-center space-x-2 md:hidden">
+//           {mounted && user ? (
+//             <button
+//               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+//               className="w-8 h-8 rounded-full bg-[#046A38] text-white font-black text-xs flex items-center justify-center border border-emerald-300"
+//             >
+//               {user.name ? user.name.charAt(0) : "U"}
+//             </button>
+//           ) : (
+//             <button
+//               onClick={() => setAuthModalOpen(true)}
+//               className="p-1.5 text-slate-700 hover:text-[#046A38] bg-slate-100 rounded-full"
+//             >
+//               <User className="w-4 h-4 text-[#046A38]" />
+//             </button>
+//           )}
+
 //           <Link
 //             href="/cart"
-//             className="flex items-center space-x-1.5 bg-[#046A38] text-white px-3.5 py-1.5 rounded-full text-xs font-bold"
+//             className="relative p-2 bg-[#046A38] text-white rounded-full flex items-center justify-center"
 //           >
-//             <span>₹{mounted ? cartTotal.toFixed(2) : "0.00"}</span>
 //             <ShoppingBag className="w-4 h-4" />
+//             {mounted && cartCount > 0 && (
+//               <span className="absolute -top-1 -right-1 bg-[#FF6B00] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-white">
+//                 {cartCount}
+//               </span>
+//             )}
 //           </Link>
 
 //           <button
@@ -113,17 +187,65 @@
 //               key={link.name}
 //               href={link.href}
 //               onClick={() => setMobileMenuOpen(false)}
-//               className="block text-sm font-extrabold text-slate-800 hover:text-[#046A38] py-1"
+//               className={`block text-sm font-extrabold py-1 ${
+//                 pathname === link.href ? "text-[#046A38] border-l-2 border-[#046A38] pl-2" : "text-slate-800"
+//               }`}
 //             >
 //               {link.name}
 //             </Link>
 //           ))}
+
+//           {/* MOBILE USER AUTH BUTTON */}
+//           <div className="pt-2 border-t border-slate-100 space-y-2">
+//             {mounted && user ? (
+//               <button
+//                 onClick={() => {
+//                   logout();
+//                   setMobileMenuOpen(false);
+//                 }}
+//                 className="w-full flex items-center justify-between bg-red-50 text-red-600 font-extrabold text-xs px-4 py-3 rounded-xl border border-red-200"
+//               >
+//                 <span>Logged in as {user.name}</span>
+//                 <span className="font-black text-red-700">Logout</span>
+//               </button>
+//             ) : (
+//               <button
+//                 onClick={() => {
+//                   setMobileMenuOpen(false);
+//                   setAuthModalOpen(true);
+//                 }}
+//                 className="w-full flex items-center justify-center space-x-2 bg-slate-900 text-white font-extrabold text-xs px-4 py-3 rounded-xl shadow-xs"
+//               >
+//                 <User className="w-4 h-4 text-emerald-400" />
+//                 <span>Login / Register Account</span>
+//               </button>
+//             )}
+
+//             <Link
+//               href="/cart"
+//               onClick={() => setMobileMenuOpen(false)}
+//               className="flex items-center justify-between bg-[#046A38] text-white font-extrabold text-xs px-4 py-3 rounded-xl shadow-xs"
+//             >
+//               <span className="flex items-center space-x-2">
+//                 <ShoppingBag className="w-4 h-4" />
+//                 <span>View Shopping Cart</span>
+//               </span>
+//               <span className="bg-[#FF6B00] text-white text-[11px] font-black px-2.5 py-0.5 rounded-full">
+//                 {mounted ? cartCount : 0} Items
+//               </span>
+//             </Link>
+//           </div>
 //         </div>
 //       )}
+
+//       {/* AUTH POPUP MODAL */}
+//       <AuthModal
+//         isOpen={authModalOpen}
+//         onClose={() => setAuthModalOpen(false)}
+//       />
 //     </header>
 //   );
 // }
-
 
 
 
@@ -133,8 +255,9 @@
 import React, { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X, User, LogOut, ChevronDown } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
+import { useAuth } from "@/app/context/AuthContext";
 
 // React 19 Safe Hook
 const emptySubscribe = () => () => {};
@@ -148,10 +271,12 @@ function useHasMounted() {
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
   const mounted = useHasMounted();
-  
   const pathname = usePathname();
   const { getCartCount } = useCart();
+  const { user, logout } = useAuth();
 
   const cartCount = getCartCount();
 
@@ -176,7 +301,7 @@ export default function Header() {
           />
         </Link>
 
-        {/* RIGHT GROUP: NAV LINKS NEAR CART BUTTON WITH ACTIVE UNDERLINE */}
+        {/* RIGHT GROUP: NAV LINKS NEAR CART & DEDICATED LOGIN LINK */}
         <div className="hidden md:flex items-center space-x-8">
           <nav className="flex items-center space-x-7">
             {navLinks.map((link) => {
@@ -198,7 +323,55 @@ export default function Header() {
             })}
           </nav>
 
-          {/* DESKTOP CART BUTTON (ONLY ICON + QUANTITY BADGE, ZERO PRICE TEXT) */}
+          {/* USER AUTH BUTTON / DROPDOWN */}
+          {mounted && user ? (
+            <div className="relative">
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#046A38] transition-all cursor-pointer"
+              >
+                <div className="w-7 h-7 rounded-full bg-[#046A38] text-white flex items-center justify-center text-xs font-black uppercase">
+                  {user.name ? user.name.charAt(0) : "U"}
+                </div>
+                <span className="text-xs font-extrabold max-w-[90px] truncate">
+                  {user.name || "My Profile"}
+                </span>
+                <ChevronDown className="w-3.5 h-3.5" />
+              </button>
+
+              {/* USER DROPDOWN MENU */}
+              {userDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 text-xs font-extrabold space-y-1">
+                  <div className="px-4 py-2 border-b border-slate-100 space-y-0.5">
+                    <p className="text-slate-900 truncate">{user.name}</p>
+                    <p className="text-[10px] text-slate-400 font-semibold truncate">{user.email}</p>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      logout();
+                      setUserDropdownOpen(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center space-x-2 cursor-pointer transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* DIRECT DEDICATED LINK TO /login PAGE */
+            <Link
+              href="/login"
+              className="flex items-center space-x-1.5 text-xs font-extrabold px-4 py-2 rounded-full border border-slate-300 hover:border-[#046A38] text-slate-700 hover:text-[#046A38] bg-slate-50 hover:bg-emerald-50/50 transition-all cursor-pointer"
+            >
+              <User className="w-4 h-4 text-[#046A38]" />
+              <span>Login / Sign In</span>
+            </Link>
+          )}
+
+          {/* DESKTOP CART BUTTON */}
           <Link
             href="/cart"
             className="relative flex items-center justify-center p-2.5 text-white bg-[#046A38] hover:bg-[#FF6B00] rounded-full shadow-md transition-all hover:scale-105 cursor-pointer"
@@ -212,8 +385,24 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* MOBILE HEADER TOP RIGHT (ONLY CART ICON + MENU TOGGLE) */}
-        <div className="flex items-center space-x-3 md:hidden">
+        {/* MOBILE HEADER TOP RIGHT */}
+        <div className="flex items-center space-x-2 md:hidden">
+          {mounted && user ? (
+            <button
+              onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+              className="w-8 h-8 rounded-full bg-[#046A38] text-white font-black text-xs flex items-center justify-center border border-emerald-300"
+            >
+              {user.name ? user.name.charAt(0) : "U"}
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="p-1.5 text-slate-700 hover:text-[#046A38] bg-slate-100 rounded-full flex items-center justify-center"
+            >
+              <User className="w-4 h-4 text-[#046A38]" />
+            </Link>
+          )}
+
           <Link
             href="/cart"
             className="relative p-2 bg-[#046A38] text-white rounded-full flex items-center justify-center"
@@ -236,8 +425,6 @@ export default function Header() {
 
       </div>
 
-      
-
       {/* MOBILE DROPDOWN MENU */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-b border-slate-200 px-4 py-4 space-y-3">
@@ -254,8 +441,30 @@ export default function Header() {
             </Link>
           ))}
 
-          {/* MOBILE CART BUTTON AT THE BOTTOM */}
-          <div className="pt-2 border-t border-slate-100">
+          {/* MOBILE USER AUTH BUTTON */}
+          <div className="pt-2 border-t border-slate-100 space-y-2">
+            {mounted && user ? (
+              <button
+                onClick={() => {
+                  logout();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-between bg-red-50 text-red-600 font-extrabold text-xs px-4 py-3 rounded-xl border border-red-200"
+              >
+                <span>Logged in as {user.name}</span>
+                <span className="font-black text-red-700">Logout</span>
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full flex items-center justify-center space-x-2 bg-slate-900 text-white font-extrabold text-xs px-4 py-3 rounded-xl shadow-xs block text-center"
+              >
+                <User className="w-4 h-4 text-emerald-400" />
+                <span>Login / Register Account</span>
+              </Link>
+            )}
+
             <Link
               href="/cart"
               onClick={() => setMobileMenuOpen(false)}
