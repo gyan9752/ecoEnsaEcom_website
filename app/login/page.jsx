@@ -150,15 +150,15 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Mail, Lock, Leaf, ArrowRight, ShieldCheck } from "lucide-react";
+import { Mail, Lock, Leaf, ArrowRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
-export default function LoginPage() {
+function LoginForm() {
   const { login } = useAuth();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") || "/shop";
@@ -188,6 +188,93 @@ export default function LoginPage() {
     }
   };
 
+  return (
+    <div className="space-y-6">
+      {errorMsg && (
+        <div className="bg-red-50 text-red-700 text-xs font-extrabold p-4 rounded-2xl border border-red-200 text-center">
+          {errorMsg}
+        </div>
+      )}
+
+      {successMsg && (
+        <div className="bg-emerald-50 text-[#046A38] text-xs font-extrabold p-4 rounded-2xl border border-emerald-200 text-center">
+          {successMsg}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-1.5">
+          <label className="text-xs font-black uppercase tracking-wider text-slate-700">
+            Email Address *
+          </label>
+          <div className="relative">
+            <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="user@example.com"
+              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <div className="flex justify-between items-center">
+            <label className="text-xs font-black uppercase tracking-wider text-slate-700">
+              Password *
+            </label>
+            <Link href="/forgot-password" className="text-xs text-[#FF6B00] font-extrabold hover:underline">
+              Forgot Password?
+            </Link>
+          </div>
+          <div className="relative">
+            <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
+            />
+          </div>
+        </div>
+
+        {/* TERMS DISCLAIMER */}
+        <p className="text-[11px] text-slate-500 font-medium leading-normal">
+          By continuing, you agree to Ecoensa’s{" "}
+          <Link href="/terms-of-service" className="text-[#046A38] font-bold hover:underline">
+            Terms of Use
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy-policy" className="text-[#046A38] font-bold hover:underline">
+            Privacy Policy
+          </Link>.
+        </p>
+
+        {/* FLIPKART STYLE BOLD CTA BUTTON */}
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full bg-[#FF6B00] hover:bg-[#e05e00] disabled:bg-slate-400 text-white font-serif font-black text-sm py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center space-x-2 cursor-pointer uppercase tracking-wider"
+        >
+          {submitting ? (
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <>
+              <span>CONTINUE TO SIGN IN</span>
+              <ArrowRight className="w-4 h-4" />
+            </>
+          )}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default function LoginPage() {
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-900 flex flex-col justify-between">
       <Header />
@@ -234,88 +321,13 @@ export default function LoginPage() {
           {/* RIGHT COLUMN: CLEAN FORM SECTION (7 COLS - 60% WIDTH) */}
           <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-between bg-white space-y-6">
             
-            <div className="space-y-6">
-              {errorMsg && (
-                <div className="bg-red-50 text-red-700 text-xs font-extrabold p-4 rounded-2xl border border-red-200 text-center">
-                  {errorMsg}
-                </div>
-              )}
-
-              {successMsg && (
-                <div className="bg-emerald-50 text-[#046A38] text-xs font-extrabold p-4 rounded-2xl border border-emerald-200 text-center">
-                  {successMsg}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-700">
-                    Email Address *
-                  </label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="user@example.com"
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-700">
-                      Password *
-                    </label>
-                    <Link href="/forgot-password" className="text-xs text-[#FF6B00] font-extrabold hover:underline">
-                      Forgot Password?
-                    </Link>
-                  </div>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                    <input
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
-                    />
-                  </div>
-                </div>
-
-                {/* TERMS DISCLAIMER */}
-                <p className="text-[11px] text-slate-500 font-medium leading-normal">
-                  By continuing, you agree to Ecoensa’s{" "}
-                  <Link href="/terms-of-service" className="text-[#046A38] font-bold hover:underline">
-                    Terms of Use
-                  </Link>{" "}
-                  and{" "}
-                  <Link href="/privacy-policy" className="text-[#046A38] font-bold hover:underline">
-                    Privacy Policy
-                  </Link>.
-                </p>
-
-                {/* FLIPKART STYLE BOLD CTA BUTTON */}
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full bg-[#FF6B00] hover:bg-[#e05e00] disabled:bg-slate-400 text-white font-serif font-black text-sm py-4 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center space-x-2 cursor-pointer uppercase tracking-wider"
-                >
-                  {submitting ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <span>CONTINUE TO SIGN IN</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
+            <Suspense fallback={
+              <div className="py-20 text-center">
+                <div className="w-8 h-8 border-4 border-[#046A38] border-t-transparent rounded-full animate-spin mx-auto" />
+              </div>
+            }>
+              <LoginForm />
+            </Suspense>
 
             {/* BOTTOM REDIRECT TO SIGNUP */}
             <div className="pt-4 border-t border-slate-100 text-center">
