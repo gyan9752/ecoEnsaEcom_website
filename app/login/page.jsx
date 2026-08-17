@@ -146,7 +146,6 @@
 
 
 
-
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -155,7 +154,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Mail, Lock, Leaf, ArrowRight } from "lucide-react";
+import { Mail, Lock, Leaf, ArrowRight, ShieldCheck, Sparkles, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function LoginForm() {
@@ -165,6 +164,8 @@ function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -215,7 +216,7 @@ function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="user@example.com"
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
+              className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
             />
           </div>
         </div>
@@ -232,13 +233,20 @@ function LoginForm() {
           <div className="relative">
             <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
+              className="w-full pl-10 pr-10 py-3.5 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
         </div>
 
@@ -270,6 +278,28 @@ function LoginForm() {
           )}
         </button>
       </form>
+
+      {/* TRUST BADGES & EXTRA CONTENT TO FULFILL BLANK SPACE */}
+      <div className="pt-2 border-t border-slate-100 space-y-4">
+        <div className="grid grid-cols-2 gap-3 text-[11px] font-bold text-slate-600">
+          <div className="flex items-center space-x-2 bg-emerald-50/80 p-2.5 rounded-xl border border-emerald-100 text-[#046A38]">
+            <ShieldCheck className="w-4 h-4 shrink-0" />
+            <span>100% Encrypted Login</span>
+          </div>
+          <div className="flex items-center space-x-2 bg-amber-50/80 p-2.5 rounded-xl border border-amber-100 text-amber-800">
+            <Sparkles className="w-4 h-4 shrink-0" />
+            <span>Pure Organic Spices</span>
+          </div>
+        </div>
+
+        <Link
+          href="/signup"
+          className="w-full bg-slate-50 hover:bg-slate-100 text-[#046A38] font-extrabold text-xs py-3.5 px-4 rounded-xl border border-slate-200 transition-all block text-center shadow-xs"
+        >
+          New to Ecoensa? Create an account
+        </Link>
+      </div>
+
     </div>
   );
 }
@@ -280,19 +310,17 @@ export default function LoginPage() {
       <Header />
 
       <main className="flex-grow pt-8 sm:pt-12 pb-20 flex items-center justify-center px-4">
-        {/* FLIPKART STYLE 2-COLUMN SPLIT CONTAINER */}
         <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[520px]">
           
-          {/* LEFT COLUMN: THEME BRAND BANNER (5 COLS - 40% WIDTH) */}
+          {/* LEFT COLUMN: THEME BRAND BANNER */}
           <div className="md:col-span-5 bg-gradient-to-b from-[#046A38] via-[#03542c] to-[#0b2918] text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
             
-            {/* BACKGROUND ORGANIC PATTERN GLOW */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="space-y-4 relative z-10">
-              <div className="w-12 h-12 bg-white/10 rounded-2xl border border-white/20 flex items-center justify-center backdrop-blur-md">
-                <Leaf className="w-6 h-6 text-amber-300" />
+            <div className="space-y-4 relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
+              <div className="w-14 h-14 bg-white/15 rounded-2xl border border-white/30 flex items-center justify-center backdrop-blur-md animate-bounce shadow-xl">
+                <Leaf className="w-7 h-7 text-amber-300" />
               </div>
 
               <div className="space-y-2">
@@ -305,7 +333,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* BOTTOM ORGANIC UNSPLASH IMAGE GRAPHIC */}
             <div className="pt-6 relative z-10">
               <div className="rounded-2xl overflow-hidden border border-white/20 shadow-xl bg-black/20 backdrop-blur-xs">
                 <img
@@ -318,9 +345,8 @@ export default function LoginPage() {
 
           </div>
 
-          {/* RIGHT COLUMN: CLEAN FORM SECTION (7 COLS - 60% WIDTH) */}
-          <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-between bg-white space-y-6">
-            
+          {/* RIGHT COLUMN */}
+          <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-center bg-white">
             <Suspense fallback={
               <div className="py-20 text-center">
                 <div className="w-8 h-8 border-4 border-[#046A38] border-t-transparent rounded-full animate-spin mx-auto" />
@@ -328,17 +354,6 @@ export default function LoginPage() {
             }>
               <LoginForm />
             </Suspense>
-
-            {/* BOTTOM REDIRECT TO SIGNUP */}
-            <div className="pt-4 border-t border-slate-100 text-center">
-              <Link
-                href="/signup"
-                className="w-full bg-slate-50 hover:bg-slate-100 text-[#046A38] font-extrabold text-xs py-3.5 px-4 rounded-xl border border-slate-200 transition-all inline-block shadow-xs"
-              >
-                New to Ecoensa? Create an account
-              </Link>
-            </div>
-
           </div>
 
         </div>

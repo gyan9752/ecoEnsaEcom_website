@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  /* Step 1: Send OTP to Email */
+  /* Step 1: Send OTP to Email (POST /api/users/forgot-password) */
   const handleSendOtp = async (e) => {
     e.preventDefault();
     if (!email) return;
@@ -41,17 +41,20 @@ export default function ForgotPasswordPage() {
       const json = await res.json();
 
       setSendingOtp(false);
-      setSuccessMsg(json?.message || `OTP sent successfully to ${email}`);
-      setStep(2);
+      if (json?.status) {
+        setSuccessMsg(json?.message || `OTP sent successfully to ${email}. Please check your inbox!`);
+        setStep(2);
+      } else {
+        setErrorMsg(json?.message || "Failed to send OTP to email. Please check your email address.");
+      }
     } catch (err) {
-      console.warn("Forgot password OTP fetch fallback:", err);
+      console.warn("Forgot password OTP fetch error:", err);
       setSendingOtp(false);
-      setSuccessMsg(`OTP code requested for ${email}. Enter the 6-digit OTP below.`);
-      setStep(2);
+      setErrorMsg("Network error. Please try again.");
     }
   };
 
-  /* Step 2: Submit OTP & New Password */
+  /* Step 2: Submit OTP & New Password (POST /api/users/reset-password) */
   const handleResetSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
@@ -174,7 +177,7 @@ export default function ForgotPasswordPage() {
                       maxLength={6}
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
-                      placeholder="492815"
+                      placeholder="Enter 6-digit OTP"
                       className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 uppercase tracking-widest font-mono"
                     />
                   </div>

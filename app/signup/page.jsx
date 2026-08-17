@@ -196,7 +196,6 @@
 
 
 
-
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -204,7 +203,7 @@ import React, { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { Mail, Lock, User, Phone, Leaf, ArrowRight, ShieldCheck } from "lucide-react";
+import { Mail, Lock, User, Phone, Leaf, ArrowRight, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function SignupPage() {
@@ -216,6 +215,7 @@ function SignupPage() {
     password: "",
     gender: "female",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -248,19 +248,16 @@ function SignupPage() {
       <Header />
 
       <main className="flex-grow pt-8 sm:pt-12 pb-20 flex items-center justify-center px-4">
-        {/* FLIPKART STYLE 2-COLUMN SPLIT CONTAINER */}
         <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[580px]">
           
-          {/* LEFT COLUMN: THEME BRAND BANNER (5 COLS - 40% WIDTH) */}
+          {/* LEFT COLUMN */}
           <div className="md:col-span-5 bg-gradient-to-b from-[#046A38] via-[#03542c] to-[#0b2918] text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
-            
-            {/* BACKGROUND ORGANIC PATTERN GLOW */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="space-y-4 relative z-10">
-              <div className="w-12 h-12 bg-white/10 rounded-2xl border border-white/20 flex items-center justify-center backdrop-blur-md">
-                <Leaf className="w-6 h-6 text-amber-300" />
+            <div className="space-y-4 relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
+              <div className="w-14 h-14 bg-white/15 rounded-2xl border border-white/30 flex items-center justify-center backdrop-blur-md animate-bounce shadow-xl">
+                <Leaf className="w-7 h-7 text-amber-300" />
               </div>
 
               <div className="space-y-2">
@@ -273,23 +270,20 @@ function SignupPage() {
               </div>
             </div>
 
-            {/* BOTTOM ORGANIC UNSPLASH IMAGE GRAPHIC */}
-            <div className="pt-6 relative z-10">
+            <div className="pt-4 relative z-10">
               <div className="rounded-2xl overflow-hidden border border-white/20 shadow-xl bg-black/20 backdrop-blur-xs">
                 <img
                   src="https://images.unsplash.com/photo-1546548970-71785318a17b?q=80&w=800&auto=format&fit=crop"
                   alt="Organic Herbs and Spices"
-                  className="w-full h-36 sm:h-44 object-cover opacity-90 hover:scale-105 transition-transform duration-500"
+                  className="w-full h-44 sm:h-52 object-cover opacity-90 hover:scale-105 transition-transform duration-500"
                 />
               </div>
             </div>
-
           </div>
 
-          {/* RIGHT COLUMN: CLEAN FORM SECTION (7 COLS - 60% WIDTH) */}
+          {/* RIGHT COLUMN */}
           <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-between bg-white space-y-6">
-            
-            <div className="space-y-5">
+            <div className="space-y-4">
               {errorMsg && (
                 <div className="bg-red-50 text-red-700 text-xs font-extrabold p-4 rounded-2xl border border-red-200 text-center">
                   {errorMsg}
@@ -302,7 +296,7 @@ function SignupPage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-3.5">
                 <div className="space-y-1">
                   <label className="text-xs font-black uppercase tracking-wider text-slate-700">Full Name *</label>
                   <div className="relative">
@@ -354,15 +348,24 @@ function SignupPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
                     <label className="text-xs font-black uppercase tracking-wider text-slate-700">Password *</label>
-                    <input
-                      type="password"
-                      name="password"
-                      required
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="Password123"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        required
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Password123"
+                        className="w-full pl-4 pr-10 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
                   <div className="space-y-1">
                     <label className="text-xs font-black uppercase tracking-wider text-slate-700">Gender *</label>
@@ -379,7 +382,6 @@ function SignupPage() {
                   </div>
                 </div>
 
-                {/* TERMS DISCLAIMER */}
                 <p className="text-[11px] text-slate-500 font-medium leading-normal pt-1">
                   By continuing, you agree to Ecoensa’s{" "}
                   <Link href="/terms-of-service" className="text-[#046A38] font-bold hover:underline">
@@ -391,7 +393,6 @@ function SignupPage() {
                   </Link>.
                 </p>
 
-                {/* FLIPKART STYLE BOLD CTA BUTTON */}
                 <button
                   type="submit"
                   disabled={submitting}
@@ -409,8 +410,7 @@ function SignupPage() {
               </form>
             </div>
 
-            {/* BOTTOM REDIRECT TO LOGIN */}
-            <div className="pt-4 border-t border-slate-100 text-center">
+            <div className="pt-3 border-t border-slate-100 text-center">
               <Link
                 href="/login"
                 className="w-full bg-slate-50 hover:bg-slate-100 text-[#046A38] font-extrabold text-xs py-3.5 px-4 rounded-xl border border-slate-200 transition-all inline-block shadow-xs"
