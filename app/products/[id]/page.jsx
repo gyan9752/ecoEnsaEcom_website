@@ -1229,7 +1229,6 @@ export default function ProductDetailPage() {
 
         </div>
       </main>
-
       <Footer />
     </div>
   );
