@@ -43,13 +43,14 @@ export default function FloatingCartBar() {
   const otherCount = cartItems.length - 1;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-3 sm:p-4 bg-slate-900/95 backdrop-blur-md text-white border-t-2 border-emerald-500/80 shadow-2xl transition-all duration-500">
-      <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
+    <div className="fixed bottom-0 left-0 right-0 z-50 py-3 sm:py-3.5 bg-slate-950/95 backdrop-blur-md text-white border-t-2 border-[#046A38] shadow-2xl transition-all duration-500">
+      {/* 1400PX EXACT HEADER & FOOTER ALIGNED CONTAINER */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 flex items-center justify-between gap-4">
         
         {/* LEFT: CART PREVIEW & TOTAL */}
         <div className="flex items-center space-x-3 sm:space-x-4">
           <div className="relative shrink-0">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-700/80 p-0.5 border border-emerald-400/50 overflow-hidden flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-900/80 p-0.5 border border-emerald-500/50 overflow-hidden flex items-center justify-center">
               {firstItem?.image ? (
                 <img
                   src={firstItem.image}
@@ -60,7 +61,7 @@ export default function FloatingCartBar() {
                 <ShoppingBag className="w-6 h-6 text-white" />
               )}
             </div>
-            <span className="absolute -top-2 -right-2 bg-amber-400 text-slate-950 font-serif font-black text-[11px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-900 shadow-md">
+            <span className="absolute -top-2 -right-2 bg-amber-400 text-slate-950 font-bold text-[11px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-slate-950 shadow-md">
               {count}
             </span>
           </div>
@@ -71,15 +72,16 @@ export default function FloatingCartBar() {
                 {firstItem?.name || "Cart Item"}
               </span>
               {otherCount > 0 && (
-                <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded-full text-slate-300 font-bold hidden sm:inline">
+                <span className="text-[10px] bg-white/15 px-2.5 py-0.5 rounded-full text-slate-200 font-bold hidden sm:inline">
                   +{otherCount} more
                 </span>
               )}
             </div>
 
+            {/* NORMAL CLEAN PRICE TEXT */}
             <div className="flex items-baseline space-x-1.5">
-              <span className="text-[11px] text-slate-300 font-semibold">Total:</span>
-              <span className="font-serif font-black text-amber-300 text-base sm:text-lg">
+              <span className="text-xs text-slate-300 font-medium">Total:</span>
+              <span className="font-sans font-bold text-white text-sm sm:text-base">
                 ₹{formatCurrency(total)}
               </span>
             </div>
@@ -90,7 +92,7 @@ export default function FloatingCartBar() {
         <div className="flex items-center space-x-2 shrink-0">
           <Link
             href="/checkout"
-            className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 via-amber-300 to-amber-400 hover:from-amber-400 hover:to-emerald-500 text-slate-950 font-serif font-black text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105 border border-amber-200 cursor-pointer animate-pulse"
+            className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-emerald-500 via-amber-300 to-amber-400 hover:from-amber-400 hover:to-emerald-500 text-slate-950 font-sans font-black text-xs sm:text-sm px-4 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-xl transition-all duration-300 transform hover:scale-105 border border-amber-200 cursor-pointer animate-pulse"
           >
             <Sparkles className="w-4 h-4 text-slate-950 animate-spin" />
             <span className="uppercase tracking-wider">CHECKOUT NOW</span>

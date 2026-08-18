@@ -101,7 +101,6 @@
 
 
 
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -189,50 +188,55 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/35 pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/30 pointer-events-none" />
 
-      {/* HERO CONTENT CONTAINER - LEFT ALIGNED */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 sm:px-12 lg:px-16 w-full text-left space-y-6 pt-24 sm:pt-10 pb-16">
+      {/* HERO CONTENT CONTAINER - 1400PX EXACT HEADER LOGO ALIGNED */}
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-8 w-full text-left pt-20 sm:pt-24 pb-20">
         
-        {/* DYNAMIC ANIMATED CONTENT BLOCK (ONLY TEXT ANIMATES) */}
-        <div key={currentBgIndex} className="space-y-5 max-w-3xl">
+        {/* INNER CONTENT WRAPPER - MAX-W-4XL FOR PERFECT ALIGNMENT */}
+        <div className="max-w-4xl space-y-6 text-left">
           
-          {/* 1. TOP PILL BADGE WITH LIVE PULSING ACCENT DOT */}
-          <div className="anim-pill flex justify-start">
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-md bg-black/60 backdrop-blur-md border-l-4 border-[#FF6B00] text-[#FF6B00] font-extrabold text-xs sm:text-sm tracking-widest uppercase shadow-2xl border border-white/10">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF6B00] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FF6B00]"></span>
-              </span>
-              <span>{slides[currentBgIndex].tagline}</span>
+          {/* DYNAMIC ANIMATED CONTENT BLOCK (ONLY TEXT ANIMATES) */}
+          <div key={currentBgIndex} className="space-y-5 text-left">
+            
+            {/* 1. TOP PILL BADGE WITH LIVE PULSING ACCENT DOT */}
+            <div className="anim-pill flex justify-start items-center">
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-md bg-black/60 backdrop-blur-md border-l-4 border-[#FF6B00] text-[#FF6B00] font-extrabold text-xs sm:text-sm tracking-widest uppercase shadow-2xl border border-white/10">
+                <span className="relative flex h-2.5 w-2.5 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF6B00] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FF6B00]"></span>
+                </span>
+                <span>{slides[currentBgIndex].tagline}</span>
+              </div>
             </div>
+
+            {/* 2. MAIN HEADING / H1 TEXT */}
+            <h1 className="anim-heading text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.15] drop-shadow-2xl tracking-tight text-left">
+              {slides[currentBgIndex].heading}
+            </h1>
+
+            {/* 3. PARAGRAPH DESCRIPTION */}
+            <p className="anim-para text-slate-200 text-sm sm:text-base md:text-lg font-medium max-w-2xl leading-relaxed drop-shadow-lg text-left">
+              {slides[currentBgIndex].description}
+            </p>
+
           </div>
 
-          {/* 2. MAIN HEADING / H1 TEXT */}
-          <h1 className="anim-heading text-3xl sm:text-5xl md:text-5xl font-black text-white leading-tight drop-shadow-2xl tracking-tight text-left">
-            {slides[currentBgIndex].heading}
-          </h1>
+          {/* STATIC / STUCK PERSISTENT BUTTONS ROW */}
+          <div className="pt-2 flex flex-wrap items-center justify-start gap-4 sm:gap-5 z-20 text-left">
+            <Link
+              href="/shop"
+              className="bg-[#D95A00] hover:bg-[#C24E00] text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase px-8 py-4 rounded-full shadow-2xl shadow-orange-950/60 hover:scale-105 transition-all duration-300 cursor-pointer"
+            >
+              SHOP NOW
+            </Link>
 
-          {/* 3. PARAGRAPH DESCRIPTION */}
-          <p className="anim-para text-slate-200 text-sm sm:text-base md:text-lg font-medium max-w-2xl leading-relaxed drop-shadow-lg text-left">
-            {slides[currentBgIndex].description}
-          </p>
+            <Link
+              href="/contact"
+              className="bg-[#D95A00] hover:bg-[#C24E00] text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase px-8 py-4 rounded-full shadow-2xl shadow-orange-950/60 hover:scale-105 transition-all duration-300 cursor-pointer"
+            >
+              CONTACT US
+            </Link>
+          </div>
 
-        </div>
-
-        {/* STATIC / STUCK PERSISTENT BUTTONS ROW - STAYS FIXED WITHOUT RE-ANIMATING */}
-        <div className="pt-2 flex flex-wrap items-center justify-start gap-4 sm:gap-6 z-20">
-          <Link
-            href="/shop"
-            className="bg-[#D95A00] hover:bg-[#C24E00] text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase px-8 py-4 rounded-full shadow-2xl shadow-orange-950/60 hover:scale-105 transition-all duration-300 cursor-pointer"
-          >
-            SHOP NOW
-          </Link>
-
-          <Link
-            href="/contact"
-            className="bg-[#D95A00] hover:bg-[#C24E00] text-white font-extrabold text-xs sm:text-sm tracking-wider uppercase px-8 py-4 rounded-full shadow-2xl shadow-orange-950/60 hover:scale-105 transition-all duration-300 cursor-pointer"
-          >
-            CONTACT US
-          </Link>
         </div>
 
       </div>
