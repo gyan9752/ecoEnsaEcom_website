@@ -1,47 +1,58 @@
+/* eslint-disable @next/next/no-img-element */
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { Sparkles, Users, Award, TrendingUp, ArrowRight, CheckCircle2, DollarSign, Share2, UserPlus, ShieldCheck } from "lucide-react";
+import { Sparkles, Users, Award, TrendingUp, DollarSign, Share2, UserPlus } from "lucide-react";
 
 export default function AffiliatePage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col justify-between">
       <Header />
 
-      {/* TOP PADDING REDUCED TO pt-8 sm:pt-10 TO REMOVE EXTRA BLANK SPACE */}
-      <main className="flex-grow pt-8 sm:pt-10 pb-16">
-        {/* GLOBAL 1400PX CONTAINER */}
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 space-y-12">
-          
-          {/* HERO CONTAINER */}
-          <div className="bg-gradient-to-br from-[#1E7E34] via-[#046A38] to-slate-900 rounded-[32px] p-8 sm:p-14 text-white text-center space-y-6 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-72 h-72 bg-[#FF6B00]/20 rounded-full blur-3xl pointer-events-none" />
+      <main className="flex-grow pb-20">
+        
+        {/* 1. HERO BANNER SECTION (MATCHING ABOUT PAGE EXACT HERO DESIGN) */}
+        <section className="relative w-full py-12 sm:py-16 bg-slate-950 overflow-hidden mb-12 sm:mb-16">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-40 scale-105"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1920&q=80')",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-[#046A38]/70 to-slate-950" />
 
-            <span className="bg-white/10 border border-white/20 text-amber-300 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-flex items-center space-x-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
+          <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-8 text-center space-y-5">
+            <span className="bg-white/10 border border-white/20 text-amber-300 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-flex items-center space-x-1.5 shadow-lg">
+              <Sparkles className="w-4 h-4" />
               <span>Ecoensa Partner Program</span>
             </span>
 
-            <h1 className="text-3xl sm:text-5xl font-serif font-black tracking-tight max-w-3xl mx-auto leading-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-6xl font-serif font-black text-white tracking-tight leading-tight max-w-5xl mx-auto drop-shadow-xl">
               Join the Ecoensa Community & Earn Money!
             </h1>
 
-            <p className="text-sm sm:text-base text-slate-200 font-medium max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-200 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-md">
               Ecoensa is proud to offer a robust affiliate partner program for creators, health influencers, and bloggers who share our passion for 100% pure organic spices, dry fruits, and A2 ghee. Earn generous monthly commissions for every order through your link.
             </p>
 
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="pt-3 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/contact"
-                className="bg-[#FF6B00] hover:bg-[#e05e00] text-white font-black text-sm px-8 py-3.5 rounded-full shadow-lg hover:scale-105 transition-all duration-300 w-full sm:w-auto text-center"
+                className="bg-[#FF6B00] hover:bg-[#e05e00] text-white font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-full shadow-2xl hover:scale-105 transition-all duration-300"
               >
                 Apply for Affiliate Partnership
               </Link>
-              <div className="text-xs text-slate-300 font-semibold">
-                Already an affiliate partner? <Link href="/contact" className="text-amber-300 underline font-bold">Log in here</Link>
-              </div>
+            </div>
+            
+            <div className="text-xs text-slate-300 font-semibold pt-1">
+              Already an affiliate partner? <Link href="/contact" className="text-amber-300 underline font-bold">Log in here</Link>
             </div>
           </div>
+        </section>
+
+        {/* GLOBAL 1400PX CONTAINER FOR PAGE CONTENT */}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 space-y-12">
 
           {/* 4-STEP HOW IT WORKS PROCESS */}
           <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-lg border border-slate-200/80 space-y-8">
