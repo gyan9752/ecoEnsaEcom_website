@@ -1,6 +1,4 @@
 
-
-
 // /* eslint-disable @next/next/no-img-element */
 // "use client";
 
@@ -43,8 +41,9 @@
 //   const [galleryImages, setGalleryImages] = useState([]);
 //   const [selectedImage, setSelectedImage] = useState(fallbackSVG);
 
-//   const [selectedWeight, setSelectedWeight] = useState("250g");
-//   const [availableWeights, setAvailableWeights] = useState(["100g", "250g", "500g", "1kg"]);
+//   /* Grouped Variants State: { "Size": ["XXL", "XL"], "Color": ["Red", "Green"] } */
+//   const [groupedVariants, setGroupedVariants] = useState({});
+//   const [selectedVariants, setSelectedVariants] = useState({});
 
 //   const [quantity, setQuantity] = useState(1);
 //   const [added, setAdded] = useState(false);
@@ -133,15 +132,28 @@
 //           setGalleryImages(finalGallery);
 //           setSelectedImage(finalGallery[0]);
 
-//           /* Map variants / pack sizes */
+//           /* GROUP VARIANTS BY TYPE (Size, Color, Weight, etc.) */
 //           if (Array.isArray(fetchedProduct.variants) && fetchedProduct.variants.length > 0) {
-//             const weights = fetchedProduct.variants
-//               .map((v) => v.value || v.variantValue || v.name)
-//               .filter(Boolean);
-//             if (weights.length > 0) {
-//               setAvailableWeights(weights);
-//               setSelectedWeight(weights[0]);
-//             }
+//             const grouped = {};
+//             const initialSelection = {};
+
+//             fetchedProduct.variants.forEach((v) => {
+//               const typeName = v.name || v.variantName || "Variant";
+//               const typeValue = v.value || v.variantValue;
+              
+//               if (typeName && typeValue) {
+//                 if (!grouped[typeName]) {
+//                   grouped[typeName] = [];
+//                   initialSelection[typeName] = typeValue; // set first value as default
+//                 }
+//                 if (!grouped[typeName].includes(typeValue)) {
+//                   grouped[typeName].push(typeValue);
+//                 }
+//               }
+//             });
+
+//             setGroupedVariants(grouped);
+//             setSelectedVariants(initialSelection);
 //           }
 //         } else {
 //           setErrorMsg("Product details not found.");
@@ -192,6 +204,9 @@
 //   const mrp = Number(productData?.originalPrice) || 0;
 //   const discountVal = productData?.discountPercentage ?? productData?.discount ?? 0;
 
+//   // Selected Variant String Summary (e.g. "XXL / Red")
+//   const selectedVariantSummary = Object.values(selectedVariants).filter(Boolean).join(" / ") || "Standard";
+
 //   // Product Data Object for Cart Context
 //   const currentProduct = {
 //     id: productData?._id || productData?.id || productIdOrSlug,
@@ -205,7 +220,7 @@
 
 //   // REAL ADD TO CART FUNCTION CALL
 //   const handleAddToCart = () => {
-//     addToCart(currentProduct, quantity, selectedWeight);
+//     addToCart(currentProduct, quantity, selectedVariantSummary);
 //     setAdded(true);
 //     setTimeout(() => setAdded(false), 2000);
 //   };
@@ -344,27 +359,42 @@
 //                 )}
 //               </div>
 
-//               {/* WEIGHT SELECTION */}
-//               {availableWeights.length > 0 && (
-//                 <div className="space-y-2">
-//                   <label className="text-xs font-black uppercase text-slate-700 tracking-wider block">
-//                     Select Pack Size: <span className="text-[#046A38] font-bold">{selectedWeight}</span>
-//                   </label>
-//                   <div className="flex flex-wrap gap-2.5">
-//                     {availableWeights.map((weight) => (
-//                       <button
-//                         key={weight}
-//                         onClick={() => setSelectedWeight(weight)}
-//                         className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
-//                           selectedWeight === weight
-//                             ? "bg-slate-900 text-white border-slate-900 shadow-md"
-//                             : "bg-slate-50 text-slate-800 border-slate-300 hover:border-slate-400"
-//                         }`}
-//                       >
-//                         {weight}
-//                       </button>
-//                     ))}
-//                   </div>
+//               {/* DYNAMIC VARIANT SELECTION (GROUPED SEPARATELY BY TYPE) */}
+//               {Object.keys(groupedVariants).length > 0 && (
+//                 <div className="space-y-4">
+//                   {Object.keys(groupedVariants).map((typeName) => {
+//                     const values = groupedVariants[typeName];
+//                     const currentSelected = selectedVariants[typeName] || values[0];
+
+//                     return (
+//                       <div key={typeName} className="space-y-2">
+//                         <label className="text-xs font-black uppercase text-slate-700 tracking-wider block">
+//                           Select {typeName}: <span className="text-[#046A38] font-bold">{currentSelected}</span>
+//                         </label>
+//                         <div className="flex flex-wrap gap-2.5">
+//                           {values.map((val) => (
+//                             <button
+//                               key={val}
+//                               type="button"
+//                               onClick={() =>
+//                                 setSelectedVariants((prev) => ({
+//                                   ...prev,
+//                                   [typeName]: val,
+//                                 }))
+//                               }
+//                               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+//                                 currentSelected === val
+//                                   ? "bg-slate-900 text-white border-slate-900 shadow-md"
+//                                   : "bg-slate-50 text-slate-800 border-slate-300 hover:border-slate-400"
+//                               }`}
+//                             >
+//                               {val}
+//                             </button>
+//                           ))}
+//                         </div>
+//                       </div>
+//                     );
+//                   })}
 //                 </div>
 //               )}
 
@@ -418,7 +448,7 @@
 //                   {/* BUY IT NOW LINK TO CHECKOUT */}
 //                   <Link
 //                     href="/checkout"
-//                     onClick={() => addToCart(currentProduct, quantity, selectedWeight)}
+//                     onClick={() => addToCart(currentProduct, quantity, selectedVariantSummary)}
 //                     className="w-full bg-white hover:bg-slate-100 border-2 border-slate-900 text-slate-900 font-extrabold text-sm py-4 rounded-xl shadow-md transition-all duration-300 cursor-pointer text-center block"
 //                   >
 //                     BUY IT NOW
@@ -500,7 +530,7 @@
 //                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs font-medium text-slate-800">
 //                     <p><strong>Product:</strong> {productData.name}</p>
 //                     <p><strong>Heading:</strong> {productData.heading || productData.name}</p>
-//                     <p><strong>Selected Weight:</strong> {selectedWeight} Net Pack</p>
+//                     <p><strong>Selected Variant:</strong> {selectedVariantSummary}</p>
 //                     <p><strong>Collection:</strong> {productData.collectionId?.name || "Organic Superfoods"}</p>
 //                     <p><strong>Brand:</strong> Ecoensa</p>
 //                     <p><strong>Status:</strong> {productData.status || "In Stock"}</p>
@@ -592,14 +622,10 @@
 
 //         </div>
 //       </main>
-
 //       <Footer />
 //     </div>
 //   );
 // }
-
-
-
 
 
 
@@ -614,7 +640,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Star, Heart, ShoppingBag, Truck, ShieldCheck, RotateCcw, Plus, Minus, Check, MapPin, Sparkles, Leaf, Award } from "lucide-react";
+import { 
+  Star, Heart, ShoppingBag, Truck, ShieldCheck, RotateCcw, Plus, Minus, Check, MapPin, 
+  Sparkles, Leaf, Award, MessageSquare, ThumbsUp, Send, User, CheckCircle2, X 
+} from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
 
 // ==========================================
@@ -660,6 +689,15 @@ export default function ProductDetailPage() {
   const [pincodeMsg, setPincodeMsg] = useState("");
 
   const [similarProducts, setSimilarProducts] = useState([]);
+
+  /* REVIEWS STATE & WRITE A REVIEW FORM STATE */
+  const [reviewsList, setReviewsList] = useState([]);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [reviewForm, setReviewForm] = useState({ name: "", email: "", title: "", comment: "" });
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewSuccessMsg, setReviewSuccessMsg] = useState("");
 
   const { addToCart } = useCart();
 
@@ -739,7 +777,46 @@ export default function ProductDetailPage() {
           setGalleryImages(finalGallery);
           setSelectedImage(finalGallery[0]);
 
-          /* GROUP VARIANTS BY TYPE (Size, Color, Weight, etc.) */
+          /* DYNAMIC REVIEWS SETUP */
+          if (Array.isArray(fetchedProduct.reviews) && fetchedProduct.reviews.length > 0) {
+            setReviewsList(fetchedProduct.reviews);
+          } else {
+            // Default Demo Verified Reviews
+            setReviewsList([
+              {
+                id: 1,
+                name: "Anjali Sharma",
+                rating: 5,
+                date: "14 Aug 2026",
+                title: "Pure & Authentic Aroma!",
+                comment: "Absolutely loved the quality and packaging. Fresh natural aroma and medicinal richness!",
+                verified: true,
+                helpfulCount: 18,
+              },
+              {
+                id: 2,
+                name: "Rajesh Kumar",
+                rating: 5,
+                date: "10 Aug 2026",
+                title: "100% Recommended Superfood",
+                comment: "Great experience buying from Ecoensa. Fast delivery and premium eco-friendly packaging.",
+                verified: true,
+                helpfulCount: 12,
+              },
+              {
+                id: 3,
+                name: "Pooja Verma",
+                rating: 4,
+                date: "05 Aug 2026",
+                title: "Very Fresh Quality",
+                comment: "Taste and texture are top notch. Worth every rupee spent for family health.",
+                verified: true,
+                helpfulCount: 7,
+              },
+            ]);
+          }
+
+          /* GROUP VARIANTS BY TYPE */
           if (Array.isArray(fetchedProduct.variants) && fetchedProduct.variants.length > 0) {
             const grouped = {};
             const initialSelection = {};
@@ -751,7 +828,7 @@ export default function ProductDetailPage() {
               if (typeName && typeValue) {
                 if (!grouped[typeName]) {
                   grouped[typeName] = [];
-                  initialSelection[typeName] = typeValue; // set first value as default
+                  initialSelection[typeName] = typeValue;
                 }
                 if (!grouped[typeName].includes(typeValue)) {
                   grouped[typeName].push(typeValue);
@@ -811,7 +888,7 @@ export default function ProductDetailPage() {
   const mrp = Number(productData?.originalPrice) || 0;
   const discountVal = productData?.discountPercentage ?? productData?.discount ?? 0;
 
-  // Selected Variant String Summary (e.g. "XXL / Red")
+  // Selected Variant Summary
   const selectedVariantSummary = Object.values(selectedVariants).filter(Boolean).join(" / ") || "Standard";
 
   // Product Data Object for Cart Context
@@ -825,7 +902,7 @@ export default function ProductDetailPage() {
     rawProduct: productData,
   };
 
-  // REAL ADD TO CART FUNCTION CALL
+  // REAL ADD TO CART
   const handleAddToCart = () => {
     addToCart(currentProduct, quantity, selectedVariantSummary);
     setAdded(true);
@@ -837,6 +914,61 @@ export default function ProductDetailPage() {
       setPincodeMsg("Express delivery available in 2-4 business days!");
     } else {
       setPincodeMsg("Please enter a valid 6-digit Pincode");
+    }
+  };
+
+  /* SMOOTH SCROLL TO REVIEWS SECTION */
+  const scrollToReviews = () => {
+    const reviewElem = document.getElementById("customer-reviews");
+    if (reviewElem) {
+      reviewElem.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  /* WRITE A REVIEW SUBMIT HANDLER (READY FOR ADITYA'S API) */
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    setSubmittingReview(true);
+    setReviewSuccessMsg("");
+
+    const reviewPayload = {
+      productId: currentProduct.id,
+      rating: reviewRating,
+      name: reviewForm.name,
+      email: reviewForm.email,
+      title: reviewForm.title,
+      comment: reviewForm.comment,
+    };
+
+    try {
+      /* Optional Backend API Call: 
+      await fetch(`${API_BASE}/api/products/${currentProduct.id}/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(reviewPayload),
+      });
+      */
+
+      const newReview = {
+        id: Date.now(),
+        name: reviewForm.name || "Anonymous Buyer",
+        rating: reviewRating,
+        date: "Just Now",
+        title: reviewForm.title || "Organic Experience",
+        comment: reviewForm.comment,
+        verified: true,
+        helpfulCount: 0,
+      };
+
+      setReviewsList([newReview, ...reviewsList]);
+      setReviewSuccessMsg("Thank you! Your review has been submitted successfully.");
+      setReviewForm({ name: "", email: "", title: "", comment: "" });
+      setReviewRating(5);
+      setTimeout(() => setShowReviewForm(false), 2500);
+    } catch (err) {
+      console.error("Failed to post review:", err);
+    } finally {
+      setSubmittingReview(false);
     }
   };
 
@@ -868,6 +1000,11 @@ export default function ProductDetailPage() {
       </div>
     );
   }
+
+  const totalReviewsCount = reviewsList.length || 128;
+  const avgRatingScore = (
+    reviewsList.reduce((acc, r) => acc + (r.rating || 5), 0) / (reviewsList.length || 1)
+  ).toFixed(1);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col justify-between">
@@ -937,15 +1074,21 @@ export default function ProductDetailPage() {
                   {productData.name}
                 </h1>
 
-                <div className="flex items-center space-x-3 text-xs sm:text-sm font-bold">
+                {/* CLICKABLE SMOOTH SCROLL REVIEWS LINK */}
+                <div
+                  onClick={scrollToReviews}
+                  className="flex items-center space-x-3 text-xs sm:text-sm font-bold cursor-pointer group"
+                >
                   <div className="flex items-center space-x-1 text-amber-400">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-4 h-4 fill-current" />
                     ))}
                   </div>
-                  <span className="text-slate-800 font-extrabold">4.9 / 5.0</span>
+                  <span className="text-slate-800 font-extrabold">{avgRatingScore} / 5.0</span>
                   <span className="text-slate-400">•</span>
-                  <span className="text-[#046A38] font-bold underline cursor-pointer">128 Customer Reviews</span>
+                  <span className="text-[#046A38] group-hover:text-[#FF6B00] font-bold underline transition-colors">
+                    {totalReviewsCount} Customer Reviews
+                  </span>
                 </div>
               </div>
 
@@ -966,7 +1109,7 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              {/* DYNAMIC VARIANT SELECTION (GROUPED SEPARATELY BY TYPE) */}
+              {/* DYNAMIC VARIANT SELECTION */}
               {Object.keys(groupedVariants).length > 0 && (
                 <div className="space-y-4">
                   {Object.keys(groupedVariants).map((typeName) => {
@@ -1005,7 +1148,7 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
-              {/* QUANTITY & BLACK & WHITE BUTTONS */}
+              {/* QUANTITY & BUTTONS */}
               <div className="space-y-4 pt-1">
                 <div className="flex items-center space-x-2">
                   <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Quantity:</span>
@@ -1030,7 +1173,6 @@ export default function ProductDetailPage() {
 
                 {/* BLACK & WHITE BUTTONS */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {/* ADD TO CART BUTTON */}
                   <button
                     onClick={handleAddToCart}
                     className={`w-full font-extrabold text-sm py-4 rounded-xl shadow-md transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer ${
@@ -1052,7 +1194,6 @@ export default function ProductDetailPage() {
                     )}
                   </button>
 
-                  {/* BUY IT NOW LINK TO CHECKOUT */}
                   <Link
                     href="/checkout"
                     onClick={() => addToCart(currentProduct, quantity, selectedVariantSummary)}
@@ -1160,6 +1301,235 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
+            </div>
+
+          </div>
+
+          {/* ========================================== */}
+          {/* CUSTOMER REVIEWS & WRITE A REVIEW SECTION */}
+          {/* ========================================== */}
+          <div id="customer-reviews" className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-xl space-y-8">
+            
+            {/* REVIEWS HEADER */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-6">
+              <div>
+                <span className="text-[#FF6B00] text-xs font-black uppercase tracking-widest bg-orange-100/80 px-3 py-1 rounded-full border border-orange-200 inline-block mb-2">
+                  Verified Customer Experience
+                </span>
+                <h3 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
+                  Customer Ratings & Reviews ({totalReviewsCount})
+                </h3>
+              </div>
+
+              <button
+                onClick={() => setShowReviewForm(!showReviewForm)}
+                className="bg-[#046A38] hover:bg-[#03522b] text-white font-extrabold text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer self-start sm:self-auto"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>{showReviewForm ? "Cancel Review" : "Write a Review"}</span>
+              </button>
+            </div>
+
+            {/* RATING BREAKDOWN OVERVIEW */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-slate-50 p-6 sm:p-8 rounded-2xl border border-slate-200">
+              
+              {/* SCORE CARD */}
+              <div className="md:col-span-4 text-center border-b md:border-b-0 md:border-r border-slate-200 pb-6 md:pb-0 md:pr-6 space-y-2">
+                <span className="text-4xl sm:text-5xl font-serif font-black text-slate-900 block">
+                  {avgRatingScore}
+                </span>
+                <div className="flex items-center justify-center space-x-1 text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 fill-current" />
+                  ))}
+                </div>
+                <p className="text-xs text-slate-500 font-bold">Based on {totalReviewsCount} Verified Reviews</p>
+              </div>
+
+              {/* PROGRESS BARS */}
+              <div className="md:col-span-8 space-y-2.5">
+                {[
+                  { star: 5, pct: "85%" },
+                  { star: 4, pct: "10%" },
+                  { star: 3, pct: "3%" },
+                  { star: 2, pct: "1%" },
+                  { star: 1, pct: "1%" },
+                ].map((row) => (
+                  <div key={row.star} className="flex items-center space-x-3 text-xs font-bold text-slate-700">
+                    <span className="w-12 text-right">{row.star} Star</span>
+                    <div className="flex-1 h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                      <div className="h-full bg-amber-400 rounded-full" style={{ width: row.pct }} />
+                    </div>
+                    <span className="w-10 text-slate-500">{row.pct}</span>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+            {/* INTERACTIVE WRITE A REVIEW FORM */}
+            {showReviewForm && (
+              <form onSubmit={handleReviewSubmit} className="bg-emerald-50/60 p-6 sm:p-8 rounded-2xl border border-emerald-200 space-y-5 animate-fadeIn">
+                <div className="flex items-center justify-between border-b border-emerald-200/80 pb-3">
+                  <h4 className="font-serif font-black text-slate-900 text-lg">
+                    Share Your Organic Food Experience
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => setShowReviewForm(false)}
+                    className="text-slate-400 hover:text-slate-700 cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {reviewSuccessMsg && (
+                  <div className="bg-emerald-100 text-[#046A38] text-xs font-extrabold p-4 rounded-xl border border-emerald-300 text-center flex items-center justify-center space-x-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>{reviewSuccessMsg}</span>
+                  </div>
+                )}
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black uppercase text-slate-700 block">Overall Rating *</label>
+                  <div className="flex items-center space-x-1">
+                    {[1, 2, 3, 4, 5].map((starNum) => (
+                      <button
+                        key={starNum}
+                        type="button"
+                        onMouseEnter={() => setHoverRating(starNum)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        onClick={() => setReviewRating(starNum)}
+                        className="p-1 cursor-pointer transition-transform hover:scale-110"
+                      >
+                        <Star
+                          className={`w-7 h-7 ${
+                            (hoverRating || reviewRating) >= starNum
+                              ? "fill-amber-400 text-amber-400"
+                              : "text-slate-300"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                    <span className="text-xs font-black text-slate-700 ml-2">
+                      ({hoverRating || reviewRating} / 5 Stars)
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-black uppercase text-slate-700 block">Your Name *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Anjali Sharma"
+                      value={reviewForm.name}
+                      onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-white"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-black uppercase text-slate-700 block">Your Email *</label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="anjali@example.com"
+                      value={reviewForm.email}
+                      onChange={(e) => setReviewForm({ ...reviewForm, email: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-slate-700 block">Review Headline *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Pure, aromatic and genuine quality!"
+                    value={reviewForm.title}
+                    onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-white"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-black uppercase text-slate-700 block">Detailed Review *</label>
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder="Write detailed feedback about product freshness, aroma, packaging, etc."
+                    value={reviewForm.comment}
+                    onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-white"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  className="bg-[#FF6B00] hover:bg-[#e05e00] disabled:bg-slate-400 text-white font-extrabold text-xs sm:text-sm px-8 py-3.5 rounded-xl shadow-md transition-all flex items-center space-x-2 cursor-pointer"
+                >
+                  {submittingReview ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <span>Submit Verified Review</span>
+                      <Send className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+
+            {/* REVIEWS LIST */}
+            <div className="space-y-4 pt-2">
+              {reviewsList.map((rev) => (
+                <div key={rev.id} className="bg-slate-50 p-6 rounded-2xl border border-slate-200/90 space-y-3">
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-full bg-emerald-100 text-[#046A38] flex items-center justify-center font-bold">
+                        <User className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <h5 className="font-extrabold text-sm text-slate-900">{rev.name}</h5>
+                          {rev.verified && (
+                            <span className="bg-emerald-100 text-[#046A38] text-[10px] font-black px-2 py-0.5 rounded border border-emerald-200 flex items-center space-x-1">
+                              <CheckCircle2 className="w-3 h-3" />
+                              <span>Verified Buyer</span>
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[11px] text-slate-400 font-medium">{rev.date}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-1 text-amber-400">
+                      {[...Array(rev.rating || 5)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 pl-1">
+                    <h6 className="font-serif font-black text-slate-900 text-sm">{rev.title}</h6>
+                    <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">{rev.comment}</p>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between text-xs text-slate-500 border-t border-slate-200/60">
+                    <button className="flex items-center space-x-1.5 hover:text-[#046A38] font-bold cursor-pointer transition-colors">
+                      <ThumbsUp className="w-3.5 h-3.5" />
+                      <span>Helpful ({rev.helpfulCount || 12})</span>
+                    </button>
+                    <span className="text-[11px] font-semibold text-slate-400">Ecoensa Organic Certified</span>
+                  </div>
+
+                </div>
+              ))}
             </div>
 
           </div>

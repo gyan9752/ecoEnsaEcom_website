@@ -36,8 +36,8 @@ export default function FounderMessage() {
           {/* RIGHT COLUMN: FOUNDER'S MESSAGE CONTENT */}
           <div className="lg:col-span-7 space-y-4 text-slate-700 w-full">
             
-            {/* SERIF HEADING */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-black text-[#046A38] tracking-tight">
+            {/* SERIF HEADING - CHANGED FROM GREEN TO BLACK */}
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-black text-slate-900 tracking-tight">
               Founder&apos;s Message
             </h2>
 
@@ -51,14 +51,15 @@ export default function FounderMessage() {
                 Empowering women is a way to empower our natural resources on which every aspect of life depends. Time is now to act and take action to make our environment more sustainable for the future generation.
               </p>
 
-              <p className="font-extrabold text-[#046A38] text-base">
+              {/* CALLOUT PARAGRAPH - CHANGED FROM GREEN TO BLACK */}
+              <p className="font-extrabold text-slate-900 text-base">
                 Come together to act now!
               </p>
             </div>
 
-            {/* RIGHT ALIGNED SIGNATURE NAME */}
+            {/* RIGHT ALIGNED SIGNATURE NAME - CHANGED FROM GREEN TO BLACK */}
             <div className="pt-2 text-right">
-              <h4 className="text-2xl sm:text-3xl font-serif font-black text-[#046A38]">
+              <h4 className="text-2xl sm:text-3xl font-serif font-black text-slate-900">
                 Dr. Archana Naithani
               </h4>
               <span className="text-xs font-bold text-slate-500 block">

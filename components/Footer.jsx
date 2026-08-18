@@ -75,45 +75,76 @@ export default function Footer() {
           </div>
 
           {/* COLUMN 4: CONTACT INFO WITH MAP PIN ICONS FOR BOTH OFFICES */}
-          <div className="lg:col-span-3 space-y-4">
-            <h4 className="text-lg sm:text-xl font-black text-white tracking-wide border-b border-white/20 pb-2">
-              Contact Info
-            </h4>
+        <div className="lg:col-span-3 space-y-4">
+  <h4 className="text-lg sm:text-xl font-black text-white tracking-wide border-b border-white/20 pb-2">
+    Contact Info
+  </h4>
 
-            <div className="space-y-4 text-sm sm:text-base text-white/95 font-medium leading-relaxed">
-              
-              {/* REGISTERED OFFICE */}
-              <div className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-white shrink-0 mt-1" />
-                <div>
-                  <span className="font-extrabold block text-white text-base">Registered Office:</span>
-                  <span className="text-sm">JG_III, 228-B, Vikas Puri, New Delhi. India, Pincode - 110018</span>
-                </div>
-              </div>
+  <div className="space-y-4 text-sm sm:text-base text-white/95 font-medium leading-relaxed">
+    
+    {/* REGISTERED OFFICE - CLICKABLE ICON & ADDRESS */}
+    <a
+      href="https://www.google.com/maps/search/?api=1&query=JG_III+228-B+Vikas+Puri+New+Delhi+110018"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-start space-x-3 group cursor-pointer hover:text-amber-300 transition-colors"
+    >
+      <MapPin className="w-5 h-5 text-white group-hover:text-amber-300 shrink-0 mt-1 transition-colors" />
+      <div>
+        <span className="font-extrabold block text-white group-hover:text-amber-300 text-base transition-colors">
+          Registered Office:
+        </span>
+        <span className="text-sm">
+          JG_III, 228-B, Vikas Puri, New Delhi. India, Pincode - 110018
+        </span>
+      </div>
+    </a>
 
-              {/* CORPORATE OFFICE WITH LOCATION ICON */}
-              <div className="flex items-start space-x-3 pt-1">
-                <MapPin className="w-5 h-5 text-white shrink-0 mt-1" />
-                <div>
-                  <span className="font-extrabold block text-white text-base">Corporate Office:</span>
-                  <span className="text-sm">B-208, Tower 3, Techzone VI, Greater Noida West, 201306</span>
-                </div>
-              </div>
+    {/* CORPORATE OFFICE - CLICKABLE ICON & ADDRESS */}
+    <a
+      href="https://www.google.com/maps/search/?api=1&query=B-208+Tower+3+Techzone+VI+Greater+Noida+West+201306"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-start space-x-3 pt-1 group cursor-pointer hover:text-amber-300 transition-colors"
+    >
+      <MapPin className="w-5 h-5 text-white group-hover:text-amber-300 shrink-0 mt-1 transition-colors" />
+      <div>
+        <span className="font-extrabold block text-white group-hover:text-amber-300 text-base transition-colors">
+          Corporate Office:
+        </span>
+        <span className="text-sm">
+          B-208, Tower 3, Techzone VI, Greater Noida West, 201306
+        </span>
+      </div>
+    </a>
 
-              {/* PHONE */}
-              <div className="flex items-center space-x-3 pt-1">
-                <Phone className="w-5 h-5 text-white shrink-0" />
-                <a href="tel:+919871500373" className="hover:underline font-bold text-base">0120-6050108, +91-9871500373</a>
-              </div>
+    {/* PHONE NUMBERS - CLICKABLE ICON & NUMBERS */}
+    <div className="flex items-center space-x-3 pt-1">
+      <a href="tel:+919871500373" title="Call Us" className="text-white hover:text-amber-300 transition-colors">
+        <Phone className="w-5 h-5 shrink-0" />
+      </a>
+      <div className="flex items-center space-x-2">
+        <a href="tel:01206050108" className="hover:underline hover:text-amber-300 font-bold text-base transition-colors">
+          0120-6050108
+        </a>
+        <span>,</span>
+        <a href="tel:+919871500373" className="hover:underline hover:text-amber-300 font-bold text-base transition-colors">
+          +91-9871500373
+        </a>
+      </div>
+    </div>
 
-              {/* EMAIL */}
-              <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-white shrink-0" />
-                <a href="mailto:info@ecoensa.com" className="hover:underline font-bold text-base">info@ecoensa.com</a>
-              </div>
+    {/* EMAIL - CLICKABLE ICON & ADDRESS */}
+    <a
+      href="mailto:info@ecoensa.com"
+      className="flex items-center space-x-3 group hover:text-amber-300 transition-colors"
+    >
+      <Mail className="w-5 h-5 text-white group-hover:text-amber-300 shrink-0 transition-colors" />
+      <span className="hover:underline font-bold text-base">info@ecoensa.com</span>
+    </a>
 
-            </div>
-          </div>
+  </div>
+</div>
 
         </div>
 

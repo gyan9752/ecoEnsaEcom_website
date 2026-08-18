@@ -1,28 +1,64 @@
+/* eslint-disable @next/next/no-img-element */
+"use client";
+
+import React from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { RotateCcw, CheckCircle2, ShieldAlert, PackageX, Clock, CreditCard, Ban, FileText } from "lucide-react";
+import { RotateCcw, CheckCircle2, ShieldAlert, PackageX, Clock, CreditCard, Ban, FileText, Sparkles, ArrowRight } from "lucide-react";
 
 export default function RefundPolicyPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col justify-between">
       <Header />
 
-      {/* TOP PADDING REDUCED TO pt-8 sm:pt-10 TO REMOVE EXTRA BLANK SPACE */}
-      <main className="flex-grow pt-8 sm:pt-10 pb-16">
-        {/* GLOBAL 1400PX FULL-WIDTH CONTAINER */}
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 space-y-10">
-          
-          {/* HEADER (SMALLER SIZE & SOLID BLACK) */}
-          <div className="text-center space-y-3">
-            <span className="text-[#FF6B00] text-xs font-black uppercase tracking-widest bg-orange-100/80 px-4 py-1.5 rounded-full border border-orange-200 inline-block">
-              Hassle-Free Returns & Satisfaction Guarantee
+      <main className="flex-grow pb-24">
+        
+        {/* 1. MASTER HERO BANNER SECTION */}
+        <section className="relative w-full py-12 sm:py-16 bg-slate-950 overflow-hidden mb-12 sm:mb-16">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-40 scale-105"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1920&q=80')",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-[#046A38]/70 to-slate-950" />
+
+          <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-8 text-center space-y-5">
+            <span className="bg-white/10 border border-white/20 text-amber-300 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full inline-flex items-center space-x-1.5 shadow-lg">
+              <Sparkles className="w-4 h-4" />
+              <span>Hassle-Free Returns & Satisfaction Guarantee</span>
             </span>
-            <h1 className="text-2xl sm:text-3xl font-serif font-black text-slate-900 tracking-tight">
+
+            <h1 className="text-2xl sm:text-4xl lg:text-6xl font-serif font-black text-white tracking-tight leading-tight max-w-5xl mx-auto drop-shadow-xl">
               Refund & Cancellation Policy
             </h1>
-            <div className="w-16 h-1 bg-[#FF6B00] rounded-full mx-auto" />
+
+            <p className="text-sm sm:text-base text-slate-200 font-medium max-w-3xl mx-auto leading-relaxed drop-shadow-md">
+              At Ecoensa, we stand behind the quality of our 100% certified organic products. Learn about our easy 5-day returns, zero-fee damaged replacements, and swift 3 to 5-day refund process.
+            </p>
+
+            <div className="pt-3 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/shop"
+                className="bg-[#FF6B00] hover:bg-[#e05e00] text-white font-extrabold text-xs sm:text-sm px-7 py-3.5 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 flex items-center space-x-2"
+              >
+                <span>Explore Our Products</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/contact"
+                className="bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs sm:text-sm px-7 py-3.5 rounded-full border border-white/30 backdrop-blur-md transition-all duration-300"
+              >
+                Contact Support
+              </Link>
+            </div>
           </div>
+        </section>
+
+        {/* GLOBAL 1400PX FULL-WIDTH CONTAINER */}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-8 space-y-10">
 
           {/* QUICK REFUND TIMELINE SUMMARY CARDS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
