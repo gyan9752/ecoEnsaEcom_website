@@ -1,3 +1,4 @@
+
 // /* eslint-disable @next/next/no-img-element */
 // "use client";
 
@@ -8,7 +9,7 @@
 // import { Mail, Lock, User, Phone, Leaf, ArrowRight, ArrowLeft, ShieldCheck, Eye, EyeOff } from "lucide-react";
 // import { useAuth } from "../context/AuthContext";
 
-// function SignupPage() {
+// export default function SignupPage() {
 //   const { signup } = useAuth();
 //   const [formData, setFormData] = useState({
 //     name: "",
@@ -21,6 +22,18 @@
 //   const [submitting, setSubmitting] = useState(false);
 //   const [errorMsg, setErrorMsg] = useState("");
 //   const [successMsg, setSuccessMsg] = useState("");
+
+//   // LAZY INITIALIZER FOR REDIRECT PATH (ZERO LINTER ERRORS & ZERO HISTORY POISONING)
+//   const [redirectPath] = useState(() => {
+//     if (typeof window !== "undefined") {
+//       const params = new URLSearchParams(window.location.search);
+//       return params.get("redirect") || "/shop";
+//     }
+//     return "/shop";
+//   });
+
+//   const backHref = redirectPath === "/checkout" ? "/cart" : "/shop";
+//   const backLabel = redirectPath === "/checkout" ? "Back to Cart" : "Back to Shop";
 
 //   const handleChange = (e) => {
 //     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,9 +49,9 @@
 //     setSubmitting(false);
 
 //     if (res.success) {
-//       setSuccessMsg("Account created successfully! Redirecting to shop...");
+//       setSuccessMsg("Account created successfully! Redirecting...");
 //       setTimeout(() => {
-//         window.location.href = "/shop";
+//         window.location.href = redirectPath;
 //       }, 1000);
 //     } else {
 //       setErrorMsg(res.message);
@@ -51,14 +64,14 @@
 
 //       <main className="flex-grow pb-20">
         
-//         {/* SIMPLE CLEAN BACK LINK ALIGNED BELOW HEADER LOGO */}
+//         {/* DYNAMIC SMART BACK LINK */}
 //         <div className="max-w-[1400px] mx-auto px-4 sm:px-8 pt-5 pb-2">
 //           <Link
-//             href="/shop"
+//             href={backHref}
 //             className="inline-flex items-center space-x-2 text-slate-700 hover:text-[#FF6B00] text-xs sm:text-sm font-extrabold transition-colors cursor-pointer group"
 //           >
 //             <ArrowLeft className="w-4 h-4 text-[#046A38] group-hover:-translate-x-1 transition-transform" />
-//             <span>Back to Shop</span>
+//             <span>{backLabel}</span>
 //           </Link>
 //         </div>
 
@@ -228,7 +241,7 @@
 
 //               <div className="pt-3 border-t border-slate-100 text-center">
 //                 <Link
-//                   href="/login"
+//                   href={`/login${redirectPath ? `?redirect=${encodeURIComponent(redirectPath)}` : ""}`}
 //                   className="w-full bg-slate-50 hover:bg-slate-100 text-[#046A38] font-extrabold text-xs py-3.5 px-4 rounded-xl border border-slate-200 transition-all inline-block shadow-xs"
 //                 >
 //                   Existing User? Log in
@@ -247,9 +260,6 @@
 //   );
 // }
 
-// export default SignupPage;
-
-
 
 
 
@@ -263,7 +273,7 @@ import React, { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { Mail, Lock, User, Phone, Leaf, ArrowRight, ArrowLeft, ShieldCheck, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Phone, Leaf, ArrowLeft, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 export default function SignupPage() {
@@ -273,9 +283,11 @@ export default function SignupPage() {
     email: "",
     phone: "",
     password: "",
+    confirmPassword: "",
     gender: "female",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -294,6 +306,7 @@ export default function SignupPage() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errorMsg) setErrorMsg("");
   };
 
   const handleSubmit = async (e) => {
@@ -302,7 +315,30 @@ export default function SignupPage() {
     setErrorMsg("");
     setSuccessMsg("");
 
-    const res = await signup(formData);
+    // 1. PASSWORD LENGTH VALIDATION
+    if (formData.password.length < 6) {
+      setErrorMsg("Password must be at least 6 characters long.");
+      setSubmitting(false);
+      return;
+    }
+
+    // 2. CONFIRM PASSWORD MATCH VALIDATION
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMsg("Password and Confirm Password do not match!");
+      setSubmitting(false);
+      return;
+    }
+
+    // EXCLUDE CONFIRM PASSWORD FROM API PAYLOAD IF BACKEND DOESN'T REQUIRE IT
+    const apiPayload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password,
+      gender: formData.gender,
+    };
+
+    const res = await signup(apiPayload);
     setSubmitting(false);
 
     if (res.success) {
@@ -311,7 +347,7 @@ export default function SignupPage() {
         window.location.href = redirectPath;
       }, 1000);
     } else {
-      setErrorMsg(res.message);
+      setErrorMsg(res.message || "Registration failed. Please try again.");
     }
   };
 
@@ -371,7 +407,7 @@ export default function SignupPage() {
             <div className="md:col-span-7 p-8 sm:p-12 flex flex-col justify-between bg-white space-y-6">
               <div className="space-y-4">
                 {errorMsg && (
-                  <div className="bg-red-50 text-red-700 text-xs font-extrabold p-4 rounded-2xl border border-red-200 text-center">
+                  <div className="bg-red-50 text-red-700 text-xs font-extrabold p-4 rounded-2xl border border-red-200 text-center animate-shake">
                     {errorMsg}
                   </div>
                 )}
@@ -383,6 +419,7 @@ export default function SignupPage() {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-3.5">
+                  {/* FULL NAME */}
                   <div className="space-y-1">
                     <label className="text-xs font-black uppercase tracking-wider text-slate-700">Full Name *</label>
                     <div className="relative">
@@ -399,6 +436,7 @@ export default function SignupPage() {
                     </div>
                   </div>
 
+                  {/* EMAIL ADDRESS */}
                   <div className="space-y-1">
                     <label className="text-xs font-black uppercase tracking-wider text-slate-700">Email Address *</label>
                     <div className="relative">
@@ -415,6 +453,7 @@ export default function SignupPage() {
                     </div>
                   </div>
 
+                  {/* PHONE NUMBER */}
                   <div className="space-y-1">
                     <label className="text-xs font-black uppercase tracking-wider text-slate-700">Phone Number *</label>
                     <div className="relative">
@@ -431,7 +470,24 @@ export default function SignupPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
+                   {/* GENDER */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-black uppercase tracking-wider text-slate-700">Gender *</label>
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleChange}
+                      className="w-full px-3 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
+                    >
+                      <option value="female">Female</option>
+                      <option value="male">Male</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  {/* PASSWORD & CONFIRM PASSWORD GRID */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* PASSWORD */}
                     <div className="space-y-1">
                       <label className="text-xs font-black uppercase tracking-wider text-slate-700">Password *</label>
                       <div className="relative">
@@ -453,20 +509,37 @@ export default function SignupPage() {
                         </button>
                       </div>
                     </div>
+
+                  
+                    {/* CONFIRM PASSWORD */}
                     <div className="space-y-1">
-                      <label className="text-xs font-black uppercase tracking-wider text-slate-700">Gender *</label>
-                      <select
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleChange}
-                        className="w-full px-3 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50 transition-colors"
-                      >
-                        <option value="female">Female</option>
-                        <option value="male">Male</option>
-                        <option value="other">Other</option>
-                      </select>
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-700">Confirm Password *</label>
+                      <div className="relative">
+                        <input
+                          type={showConfirmPassword ? "text" : "password"}
+                          name="confirmPassword"
+                          required
+                          value={formData.confirmPassword}
+                          onChange={handleChange}
+                          placeholder="Re-enter password"
+                          className={`w-full pl-4 pr-10 py-3 rounded-xl border text-xs font-bold outline-none bg-slate-50 transition-colors ${
+                            formData.confirmPassword && formData.password !== formData.confirmPassword
+                              ? "border-red-400 focus:border-red-500"
+                              : "border-slate-300 focus:border-[#046A38]"
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                        >
+                          {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                     </div>
                   </div>
+
+                 
 
                   <p className="text-[11px] text-slate-500 font-medium leading-normal pt-1">
                     By continuing, you agree to Ecoensa’s{" "}

@@ -89,20 +89,30 @@
 //                 <ChevronDown className="w-3.5 h-3.5" />
 //               </button>
 
-//               {/* USER DROPDOWN MENU */}
+//               {/* USER DROPDOWN MENU WITH MY ACCOUNT */}
 //               {userDropdownOpen && (
-//                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 text-xs font-extrabold space-y-1">
+//                 <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 text-xs font-extrabold space-y-1">
 //                   <div className="px-4 py-2 border-b border-slate-100 space-y-0.5">
 //                     <p className="text-slate-900 truncate">{user.name}</p>
 //                     <p className="text-[10px] text-slate-400 font-semibold truncate">{user.email}</p>
 //                   </div>
+
+//                   {/* MY ACCOUNT & ORDERS LINK */}
+//                   <Link
+//                     href="/my-account"
+//                     onClick={() => setUserDropdownOpen(false)}
+//                     className="w-full px-4 py-2.5 text-slate-700 hover:text-[#046A38] hover:bg-emerald-50/70 flex items-center space-x-2 cursor-pointer transition-colors"
+//                   >
+//                     <User className="w-4 h-4 text-[#046A38]" />
+//                     <span>My Account &amp; Orders</span>
+//                   </Link>
 
 //                   <button
 //                     onClick={() => {
 //                       logout();
 //                       setUserDropdownOpen(false);
 //                     }}
-//                     className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center space-x-2 cursor-pointer transition-colors"
+//                     className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center space-x-2 cursor-pointer transition-colors border-t border-slate-100"
 //                   >
 //                     <LogOut className="w-4 h-4" />
 //                     <span>Logout</span>
@@ -138,12 +148,12 @@
 //         {/* MOBILE HEADER TOP RIGHT */}
 //         <div className="flex items-center space-x-2 md:hidden">
 //           {mounted && user ? (
-//             <button
-//               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+//             <Link
+//               href="/my-account"
 //               className="w-8 h-8 rounded-full bg-[#046A38] text-white font-black text-xs flex items-center justify-center border border-emerald-300"
 //             >
 //               {user.name ? user.name.charAt(0) : "U"}
-//             </button>
+//             </Link>
 //           ) : (
 //             <Link
 //               href="/login"
@@ -191,19 +201,33 @@
 //             </Link>
 //           ))}
 
-//           {/* MOBILE USER AUTH BUTTON */}
+//           {/* MOBILE USER AUTH & MY ACCOUNT BUTTONS */}
 //           <div className="pt-2 border-t border-slate-100 space-y-2">
 //             {mounted && user ? (
-//               <button
-//                 onClick={() => {
-//                   logout();
-//                   setMobileMenuOpen(false);
-//                 }}
-//                 className="w-full flex items-center justify-between bg-red-50 text-red-600 font-extrabold text-xs px-4 py-3 rounded-xl border border-red-200"
-//               >
-//                 <span>Logged in as {user.name}</span>
-//                 <span className="font-black text-red-700">Logout</span>
-//               </button>
+//               <div className="space-y-2">
+//                 <Link
+//                   href="/my-account"
+//                   onClick={() => setMobileMenuOpen(false)}
+//                   className="w-full flex items-center justify-between bg-emerald-50 text-[#046A38] font-extrabold text-xs px-4 py-3 rounded-xl border border-emerald-200"
+//                 >
+//                   <span className="flex items-center space-x-2">
+//                     <User className="w-4 h-4" />
+//                     <span>My Account ({user.name})</span>
+//                   </span>
+//                   <span className="font-black text-[#046A38]">View</span>
+//                 </Link>
+
+//                 <button
+//                   onClick={() => {
+//                     logout();
+//                     setMobileMenuOpen(false);
+//                   }}
+//                   className="w-full flex items-center justify-between bg-red-50 text-red-600 font-extrabold text-xs px-4 py-3 rounded-xl border border-red-200 cursor-pointer"
+//                 >
+//                   <span>Sign Out</span>
+//                   <span className="font-black text-red-700">Logout</span>
+//                 </button>
+//               </div>
 //             ) : (
 //               <Link
 //                 href="/login"
@@ -243,8 +267,6 @@
 
 
 
-
-
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -265,6 +287,17 @@ function useHasMounted() {
   );
 }
 
+// HELPER: FIRST LETTER CAPITALIZATION FOR PROFILE NAME
+const formatCapitalizedName = (name) => {
+  if (!name || typeof name !== "string") return "My Profile";
+  const trimmed = name.trim();
+  if (!trimmed) return "My Profile";
+  return trimmed
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -282,6 +315,8 @@ export default function Header() {
     { name: "Shop", href: "/shop" },
     { name: "Contact Us", href: "/contact" },
   ];
+
+  const capitalizedUserName = user?.name ? formatCapitalizedName(user.name) : "My Profile";
 
   return (
     <header className="sticky top-0 z-50 bg-white text-slate-900 py-3 sm:py-4 border-b border-slate-200 shadow-xs">
@@ -327,10 +362,10 @@ export default function Header() {
                 className="flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#046A38] transition-all cursor-pointer"
               >
                 <div className="w-7 h-7 rounded-full bg-[#046A38] text-white flex items-center justify-center text-xs font-black uppercase">
-                  {user.name ? user.name.charAt(0) : "U"}
+                  {capitalizedUserName.charAt(0)}
                 </div>
                 <span className="text-xs font-extrabold max-w-[90px] truncate">
-                  {user.name || "My Profile"}
+                  {capitalizedUserName}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
@@ -339,7 +374,7 @@ export default function Header() {
               {userDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 text-xs font-extrabold space-y-1">
                   <div className="px-4 py-2 border-b border-slate-100 space-y-0.5">
-                    <p className="text-slate-900 truncate">{user.name}</p>
+                    <p className="text-slate-900 truncate">{capitalizedUserName}</p>
                     <p className="text-[10px] text-slate-400 font-semibold truncate">{user.email}</p>
                   </div>
 
@@ -398,7 +433,7 @@ export default function Header() {
               href="/my-account"
               className="w-8 h-8 rounded-full bg-[#046A38] text-white font-black text-xs flex items-center justify-center border border-emerald-300"
             >
-              {user.name ? user.name.charAt(0) : "U"}
+              {capitalizedUserName.charAt(0)}
             </Link>
           ) : (
             <Link
@@ -458,7 +493,7 @@ export default function Header() {
                 >
                   <span className="flex items-center space-x-2">
                     <User className="w-4 h-4" />
-                    <span>My Account ({user.name})</span>
+                    <span>My Account ({capitalizedUserName})</span>
                   </span>
                   <span className="font-black text-[#046A38]">View</span>
                 </Link>
