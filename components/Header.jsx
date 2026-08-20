@@ -1,7 +1,4 @@
 
-
-
-
 // /* eslint-disable @next/next/no-img-element */
 // "use client";
 
@@ -11,7 +8,6 @@
 // import { ShoppingBag, Menu, X, User, LogOut, ChevronDown } from "lucide-react";
 // import { useCart } from "@/app/context/CartContext";
 // import { useAuth } from "@/app/context/AuthContext";
-// import AuthModal from "@/components/AuthModal";
 
 // // React 19 Safe Hook
 // const emptySubscribe = () => () => {};
@@ -25,7 +21,6 @@
 
 // export default function Header() {
 //   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-//   const [authModalOpen, setAuthModalOpen] = useState(false);
 //   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
 //   const mounted = useHasMounted();
@@ -56,7 +51,7 @@
 //           />
 //         </Link>
 
-//         {/* RIGHT GROUP: NAV LINKS NEAR CART & AUTH BUTTON */}
+//         {/* RIGHT GROUP: NAV LINKS NEAR CART & DEDICATED LOGIN LINK */}
 //         <div className="hidden md:flex items-center space-x-8">
 //           <nav className="flex items-center space-x-7">
 //             {navLinks.map((link) => {
@@ -116,13 +111,14 @@
 //               )}
 //             </div>
 //           ) : (
-//             <button
-//               onClick={() => setAuthModalOpen(true)}
+//             /* DIRECT DEDICATED LINK TO /login PAGE */
+//             <Link
+//               href="/login"
 //               className="flex items-center space-x-1.5 text-xs font-extrabold px-4 py-2 rounded-full border border-slate-300 hover:border-[#046A38] text-slate-700 hover:text-[#046A38] bg-slate-50 hover:bg-emerald-50/50 transition-all cursor-pointer"
 //             >
 //               <User className="w-4 h-4 text-[#046A38]" />
 //               <span>Login / Sign In</span>
-//             </button>
+//             </Link>
 //           )}
 
 //           {/* DESKTOP CART BUTTON */}
@@ -149,12 +145,12 @@
 //               {user.name ? user.name.charAt(0) : "U"}
 //             </button>
 //           ) : (
-//             <button
-//               onClick={() => setAuthModalOpen(true)}
-//               className="p-1.5 text-slate-700 hover:text-[#046A38] bg-slate-100 rounded-full"
+//             <Link
+//               href="/login"
+//               className="p-1.5 text-slate-700 hover:text-[#046A38] bg-slate-100 rounded-full flex items-center justify-center"
 //             >
 //               <User className="w-4 h-4 text-[#046A38]" />
-//             </button>
+//             </Link>
 //           )}
 
 //           <Link
@@ -209,16 +205,14 @@
 //                 <span className="font-black text-red-700">Logout</span>
 //               </button>
 //             ) : (
-//               <button
-//                 onClick={() => {
-//                   setMobileMenuOpen(false);
-//                   setAuthModalOpen(true);
-//                 }}
-//                 className="w-full flex items-center justify-center space-x-2 bg-slate-900 text-white font-extrabold text-xs px-4 py-3 rounded-xl shadow-xs"
+//               <Link
+//                 href="/login"
+//                 onClick={() => setMobileMenuOpen(false)}
+//                 className="w-full flex items-center justify-center space-x-2 bg-slate-900 text-white font-extrabold text-xs px-4 py-3 rounded-xl shadow-xs block text-center"
 //               >
 //                 <User className="w-4 h-4 text-emerald-400" />
 //                 <span>Login / Register Account</span>
-//               </button>
+//               </Link>
 //             )}
 
 //             <Link
@@ -237,15 +231,17 @@
 //           </div>
 //         </div>
 //       )}
-
-//       {/* AUTH POPUP MODAL */}
-//       <AuthModal
-//         isOpen={authModalOpen}
-//         onClose={() => setAuthModalOpen(false)}
-//       />
 //     </header>
 //   );
 // }
+
+
+
+
+
+
+
+
 
 
 
@@ -339,20 +335,30 @@ export default function Header() {
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
-              {/* USER DROPDOWN MENU */}
+              {/* USER DROPDOWN MENU WITH MY ACCOUNT */}
               {userDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 text-xs font-extrabold space-y-1">
+                <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl border border-slate-200 shadow-xl py-2 z-50 text-xs font-extrabold space-y-1">
                   <div className="px-4 py-2 border-b border-slate-100 space-y-0.5">
                     <p className="text-slate-900 truncate">{user.name}</p>
                     <p className="text-[10px] text-slate-400 font-semibold truncate">{user.email}</p>
                   </div>
+
+                  {/* MY ACCOUNT & ORDERS LINK */}
+                  <Link
+                    href="/my-account"
+                    onClick={() => setUserDropdownOpen(false)}
+                    className="w-full px-4 py-2.5 text-slate-700 hover:text-[#046A38] hover:bg-emerald-50/70 flex items-center space-x-2 cursor-pointer transition-colors"
+                  >
+                    <User className="w-4 h-4 text-[#046A38]" />
+                    <span>My Account &amp; Orders</span>
+                  </Link>
 
                   <button
                     onClick={() => {
                       logout();
                       setUserDropdownOpen(false);
                     }}
-                    className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center space-x-2 cursor-pointer transition-colors"
+                    className="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 flex items-center space-x-2 cursor-pointer transition-colors border-t border-slate-100"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Logout</span>
@@ -388,12 +394,12 @@ export default function Header() {
         {/* MOBILE HEADER TOP RIGHT */}
         <div className="flex items-center space-x-2 md:hidden">
           {mounted && user ? (
-            <button
-              onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+            <Link
+              href="/my-account"
               className="w-8 h-8 rounded-full bg-[#046A38] text-white font-black text-xs flex items-center justify-center border border-emerald-300"
             >
               {user.name ? user.name.charAt(0) : "U"}
-            </button>
+            </Link>
           ) : (
             <Link
               href="/login"
@@ -441,19 +447,33 @@ export default function Header() {
             </Link>
           ))}
 
-          {/* MOBILE USER AUTH BUTTON */}
+          {/* MOBILE USER AUTH & MY ACCOUNT BUTTONS */}
           <div className="pt-2 border-t border-slate-100 space-y-2">
             {mounted && user ? (
-              <button
-                onClick={() => {
-                  logout();
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center justify-between bg-red-50 text-red-600 font-extrabold text-xs px-4 py-3 rounded-xl border border-red-200"
-              >
-                <span>Logged in as {user.name}</span>
-                <span className="font-black text-red-700">Logout</span>
-              </button>
+              <div className="space-y-2">
+                <Link
+                  href="/my-account"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full flex items-center justify-between bg-emerald-50 text-[#046A38] font-extrabold text-xs px-4 py-3 rounded-xl border border-emerald-200"
+                >
+                  <span className="flex items-center space-x-2">
+                    <User className="w-4 h-4" />
+                    <span>My Account ({user.name})</span>
+                  </span>
+                  <span className="font-black text-[#046A38]">View</span>
+                </Link>
+
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-between bg-red-50 text-red-600 font-extrabold text-xs px-4 py-3 rounded-xl border border-red-200 cursor-pointer"
+                >
+                  <span>Sign Out</span>
+                  <span className="font-black text-red-700">Logout</span>
+                </button>
+              </div>
             ) : (
               <Link
                 href="/login"

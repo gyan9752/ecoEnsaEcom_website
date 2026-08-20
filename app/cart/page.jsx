@@ -415,7 +415,7 @@ export default function CartPage() {
                             </Link>
 
                             <div className="flex items-baseline space-x-2 text-xs">
-                              <span className="font-serif font-black text-slate-900 text-sm">
+                              <span className="font-black text-slate-900 text-sm">
                                 ₹{formatCurrency(itemPrice)}
                               </span>
                               {itemMrp > itemPrice && (
@@ -449,7 +449,7 @@ export default function CartPage() {
                           </div>
 
                           {/* SUBTOTAL */}
-                          <span className="font-serif font-black text-slate-900 text-base sm:text-lg min-w-[90px] text-right">
+                          <span className=" font-black text-slate-900 text-base sm:text-lg min-w-[90px] text-right">
                             ₹{formatCurrency(itemTotal)}
                           </span>
 
@@ -495,7 +495,7 @@ export default function CartPage() {
 
               {/* RIGHT COLUMN: ORDER SUMMARY CARD */}
               <div className="lg:col-span-4 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-lg space-y-6 sticky top-24">
-                <h3 className="text-lg font-serif font-black text-slate-900 border-b border-slate-200 pb-3">
+                <h3 className="text-lg font-black text-slate-900 border-b border-slate-200 pb-3">
                   Order Summary
                 </h3>
 
@@ -521,7 +521,7 @@ export default function CartPage() {
 
                   <div className="border-t border-slate-200 pt-3 flex justify-between items-baseline">
                     <span className="text-base font-black text-slate-900">Total Payable:</span>
-                    <span className="text-2xl font-serif font-black text-[#046A38]">
+                    <span className="text-2xl  font-black text-[#046A38]">
                       ₹{formatCurrency(grandTotal)}
                     </span>
                   </div>

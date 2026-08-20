@@ -971,7 +971,7 @@ function ShopContent() {
                     <div className="space-y-0.5">
                       <span className="text-[10px] text-slate-400 font-bold block">Starting From</span>
                       <div className="flex items-baseline space-x-2">
-                        <span className="font-serif font-black text-slate-900 text-lg sm:text-xl">
+                        <span className=" font-black text-slate-900 text-lg sm:text-xl">
                           ₹{item.price.toLocaleString("en-IN")}
                         </span>
                         {item.mrp > item.price && (
