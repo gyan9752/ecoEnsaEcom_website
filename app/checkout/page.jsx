@@ -1,5 +1,4 @@
 
-
 // /* eslint-disable @next/next/no-img-element */
 // "use client";
 
@@ -8,7 +7,7 @@
 // import Footer from "@/components/Footer";
 // import Link from "next/link";
 // import { useRouter } from "next/navigation";
-// import { ShieldCheck, Lock, Truck, ArrowLeft, ShoppingBag, Gift, Check, UserCheck, Sparkles, CheckCircle2, PackageCheck } from "lucide-react";
+// import { ShieldCheck, Lock, Truck, ShoppingBag, Check, UserCheck, Sparkles, CheckCircle2, PackageCheck } from "lucide-react";
 // import { useCart } from "../context/CartContext";
 // import { useAuth } from "../context/AuthContext";
 
@@ -85,12 +84,11 @@
 //   const [placedOrderNumber, setPlacedOrderNumber] = useState("");
 //   const [placedOrderTotal, setPlacedOrderTotal] = useState(0);
 
-//   // Form State
+//   // Form State with Single Name Field
 //   const [formData, setFormData] = useState({
+//     fullName: "",
 //     email: "",
 //     phone: "",
-//     firstName: "",
-//     lastName: "",
 //     addressLine1: "",
 //     addressLine2: "",
 //     city: "",
@@ -118,17 +116,12 @@
 //   // AUTO-FILL LOGGED IN USER DETAILS
 //   useEffect(() => {
 //     if (user) {
-//       const nameParts = (user.name || "").trim().split(" ");
-//       const fName = nameParts[0] || "";
-//       const lName = nameParts.slice(1).join(" ") || "";
-
 //       queueMicrotask(() => {
 //         setFormData((prev) => ({
 //           ...prev,
+//           fullName: user.name || prev.fullName || "",
 //           email: user.email || prev.email || "",
 //           phone: user.phone || prev.phone || "",
-//           firstName: fName || prev.firstName || "",
-//           lastName: lName || prev.lastName || "",
 //         }));
 //       });
 //     }
@@ -181,7 +174,7 @@
 //     try {
 //       /* Step 1: Save Address to Backend API */
 //       const addressPayload = {
-//         fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+//         fullName: formData.fullName.trim(),
 //         phone: formData.phone,
 //         alternatePhone: "",
 //         addressLine1: formData.addressLine1,
@@ -222,7 +215,7 @@
 //         shippingPrice: shipping,
 //         discountAmount: 0,
 //         guestUser: {
-//           name: `${formData.firstName} ${formData.lastName}`.trim(),
+//           name: formData.fullName.trim(),
 //           email: formData.email,
 //           phone: formData.phone,
 //           address: addressPayload,
@@ -311,7 +304,7 @@
 //             },
 //           },
 //           prefill: {
-//             name: `${formData.firstName} ${formData.lastName}`.trim(),
+//             name: formData.fullName.trim(),
 //             email: formData.email,
 //             contact: formData.phone,
 //           },
@@ -348,7 +341,7 @@
 
 //   // CUSTOMER NAME FOR CONGRATULATIONS CARD
 //   const customerName = (
-//     `${formData.firstName} ${formData.lastName}`.trim() ||
+//     formData.fullName.trim() ||
 //     user?.name ||
 //     "VALUED CUSTOMER"
 //   ).toUpperCase();
@@ -479,11 +472,11 @@
 //                   <div className="lg:col-span-7 space-y-6">
 //                     <form onSubmit={handlePlaceOrder} className="space-y-6">
                       
-//                       {/* 1. CONTACT INFO */}
+//                       {/* 1. CUSTOMER INFORMATION (NAME -> EMAIL -> PHONE) */}
 //                       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-md space-y-4">
 //                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
 //                           <h3 className="text-base font-serif font-black text-slate-900">
-//                             1. Contact Information
+//                             1. Personal &amp; Contact Information
 //                           </h3>
 //                           {user && (
 //                             <span className="text-xs font-black text-[#046A38] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center space-x-1">
@@ -493,30 +486,49 @@
 //                           )}
 //                         </div>
 
-//                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+//                         <div className="space-y-4">
+//                           {/* 1. FIELD 1: NAME (SABSE UPAR) */}
 //                           <div className="space-y-1">
-//                             <label className="text-xs font-black uppercase text-slate-700">Email Address *</label>
+//                             <label className="text-xs font-black uppercase text-slate-700">Name *</label>
 //                             <input
-//                               type="email"
-//                               name="email"
+//                               type="text"
+//                               name="fullName"
 //                               required
-//                               value={formData.email}
+//                               value={formData.fullName}
 //                               onChange={handleChange}
-//                               placeholder="you@example.com"
+//                               placeholder="Enter your full name"
 //                               className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
 //                             />
 //                           </div>
-//                           <div className="space-y-1">
-//                             <label className="text-xs font-black uppercase text-slate-700">Phone Number *</label>
-//                             <input
-//                               type="tel"
-//                               name="phone"
-//                               required
-//                               value={formData.phone}
-//                               onChange={handleChange}
-//                               placeholder="+91 9871500373"
-//                               className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
-//                             />
+
+//                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+//                             {/* 2. FIELD 2: EMAIL ADDRESS */}
+//                             <div className="space-y-1">
+//                               <label className="text-xs font-black uppercase text-slate-700">Email Address *</label>
+//                               <input
+//                                 type="email"
+//                                 name="email"
+//                                 required
+//                                 value={formData.email}
+//                                 onChange={handleChange}
+//                                 placeholder="you@example.com"
+//                                 className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
+//                               />
+//                             </div>
+                            
+//                             {/* 3. FIELD 3: PHONE NUMBER */}
+//                             <div className="space-y-1">
+//                               <label className="text-xs font-black uppercase text-slate-700">Phone Number *</label>
+//                               <input
+//                                 type="tel"
+//                                 name="phone"
+//                                 required
+//                                 value={formData.phone}
+//                                 onChange={handleChange}
+//                                 placeholder="+91 9871500373"
+//                                 className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
+//                               />
+//                             </div>
 //                           </div>
 //                         </div>
 //                       </div>
@@ -528,35 +540,8 @@
 //                         </h3>
 
 //                         <div className="space-y-4">
-//                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//                             <div className="space-y-1">
-//                               <label className="text-xs font-black uppercase text-slate-700">First Name *</label>
-//                               <input
-//                                 type="text"
-//                                 name="firstName"
-//                                 required
-//                                 value={formData.firstName}
-//                                 onChange={handleChange}
-//                                 placeholder="Dr. Archana"
-//                                 className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
-//                               />
-//                             </div>
-//                             <div className="space-y-1">
-//                               <label className="text-xs font-black uppercase text-slate-700">Last Name *</label>
-//                               <input
-//                                 type="text"
-//                                 name="lastName"
-//                                 required
-//                                 value={formData.lastName}
-//                                 onChange={handleChange}
-//                                 placeholder="Naithani"
-//                                 className="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs font-bold outline-none focus:border-[#046A38] bg-slate-50"
-//                               />
-//                             </div>
-//                           </div>
-
 //                           <div className="space-y-1">
-//                             <label className="text-xs font-black uppercase text-slate-700">Flat, House No., Building *</label>
+//                             <label className="text-xs font-black uppercase text-slate-700">Flat, House No., Building, Street *</label>
 //                             <input
 //                               type="text"
 //                               name="addressLine1"
@@ -748,11 +733,6 @@
 
 
 
-
-
-
-
-
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -761,7 +741,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Lock, Truck, ShoppingBag, Check, UserCheck, Sparkles, CheckCircle2, PackageCheck } from "lucide-react";
+import { 
+  ShieldCheck, Lock, Truck, ShoppingBag, Check, UserCheck, Sparkles, 
+  CheckCircle2, PackageCheck, MapPin, Plus, Home, Briefcase, CheckCircle, 
+  X, ChevronRight, Edit3 
+} from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -788,9 +772,7 @@ const getAuthToken = () => {
       if (parsed?.authToken) return parsed.authToken;
       if (parsed?.accessToken) return parsed.accessToken;
       if (parsed?.data?.token) return parsed.data.token;
-    } catch {
-      // string
-    }
+    } catch {}
     return String(raw).trim();
   };
 
@@ -838,7 +820,13 @@ export default function CheckoutPage() {
   const [placedOrderNumber, setPlacedOrderNumber] = useState("");
   const [placedOrderTotal, setPlacedOrderTotal] = useState(0);
 
-  // Form State with Single Name Field
+  // ADDRESS MANAGEMENT STATES
+  const [userAddresses, setUserAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState("new"); // '_id' or 'new'
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+
+  // Form State
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -850,14 +838,14 @@ export default function CheckoutPage() {
     pincode: "",
   });
 
-  // AUTO SCROLL TO TOP WHEN ORDER IS PLACED TO PREVENT FOOTER VIEW OVERLAP
+  // AUTO SCROLL TO TOP WHEN ORDER IS PLACED
   useEffect(() => {
     if (orderPlaced && typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [orderPlaced]);
 
-  // CLEAN REDIRECT UNAUTHENTICATED GUEST USERS WITH REPLACE
+  // REDIRECT UNAUTHENTICATED GUEST USERS
   useEffect(() => {
     if (mounted && typeof window !== "undefined") {
       const activeToken = getAuthToken();
@@ -867,23 +855,92 @@ export default function CheckoutPage() {
     }
   }, [mounted, router]);
 
-  // AUTO-FILL LOGGED IN USER DETAILS
+  // AUTO-FILL USER BASIC INFO & FETCH SAVED ADDRESSES
   useEffect(() => {
-    if (user) {
-      queueMicrotask(() => {
-        setFormData((prev) => ({
-          ...prev,
-          fullName: user.name || prev.fullName || "",
-          email: user.email || prev.email || "",
-          phone: user.phone || prev.phone || "",
-        }));
-      });
+    const activeToken = getAuthToken();
+    if (!activeToken) return;
+
+    async function fetchUserAddresses() {
+      try {
+        setLoadingAddresses(true);
+        const res = await fetch(`${API_BASE}/api/addresses`, {
+          headers: { Authorization: `Bearer ${activeToken}` },
+        });
+        const json = await res.json();
+        const addrList = json?.data || json?.addresses || (Array.isArray(json) ? json : []);
+
+        if (Array.isArray(addrList) && addrList.length > 0) {
+          setUserAddresses(addrList);
+
+          // Find default address or pick first saved address
+          const defaultAddr = addrList.find((a) => a.isDefault) || addrList[0];
+          if (defaultAddr) {
+            const aId = defaultAddr._id || defaultAddr.id;
+            setSelectedAddressId(aId);
+
+            setFormData({
+              fullName: defaultAddr.fullName || user?.name || "",
+              email: user?.email || "",
+              phone: defaultAddr.phone || user?.phone || "",
+              addressLine1: defaultAddr.addressLine1 || "",
+              addressLine2: defaultAddr.addressLine2 || "",
+              city: defaultAddr.city || "",
+              state: defaultAddr.state || "",
+              pincode: defaultAddr.pincode || "",
+            });
+          }
+        } else {
+          if (user) {
+            setFormData((prev) => ({
+              ...prev,
+              fullName: user.name || prev.fullName || "",
+              email: user.email || prev.email || "",
+              phone: user.phone || prev.phone || "",
+            }));
+          }
+        }
+      } catch (err) {
+        console.warn("Addresses fetch error:", err);
+      } finally {
+        setLoadingAddresses(false);
+      }
     }
+
+    fetchUserAddresses();
   }, [user]);
 
   useEffect(() => {
     loadRazorpayScript();
   }, []);
+
+  // HANDLE SAVED ADDRESS SELECTION FROM MODAL
+  const handleSelectSavedAddress = (addr) => {
+    if (addr === "new") {
+      setSelectedAddressId("new");
+      setFormData((prev) => ({
+        ...prev,
+        addressLine1: "",
+        addressLine2: "",
+        city: "",
+        state: "",
+        pincode: "",
+      }));
+    } else {
+      const aId = addr._id || addr.id;
+      setSelectedAddressId(aId);
+      setFormData({
+        fullName: addr.fullName || user?.name || formData.fullName,
+        email: user?.email || formData.email,
+        phone: addr.phone || user?.phone || formData.phone,
+        addressLine1: addr.addressLine1 || "",
+        addressLine2: addr.addressLine2 || "",
+        city: addr.city || "",
+        state: addr.state || "",
+        pincode: addr.pincode || "",
+      });
+    }
+    setAddressModalOpen(false);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -893,7 +950,8 @@ export default function CheckoutPage() {
   const shipping = subtotal > 999 || subtotal === 0 ? 0 : 99;
   const grandTotal = subtotal + shipping;
 
-  // PREVENT SSR HYDRATION MISMATCH OR UNMATCHED REDIRECT
+  const activeSavedAddress = userAddresses.find((a) => (a._id || a.id) === selectedAddressId);
+
   if (!mounted) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col justify-between font-sans">
@@ -926,7 +984,9 @@ export default function CheckoutPage() {
     }
 
     try {
-      /* Step 1: Save Address to Backend API */
+      /* Step 1: Handle Address ID or Save New Address */
+      let finalAddressId = selectedAddressId !== "new" ? selectedAddressId : null;
+
       const addressPayload = {
         fullName: formData.fullName.trim(),
         phone: formData.phone,
@@ -939,32 +999,32 @@ export default function CheckoutPage() {
         pincode: formData.pincode,
         country: "India",
         addressType: "home",
-        isDefault: true,
+        isDefault: userAddresses.length === 0,
       };
 
-      let addressId = null;
-
-      try {
-        const addrRes = await fetch(`${API_BASE}/api/addresses`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${activeToken}`,
-          },
-          body: JSON.stringify(addressPayload),
-        });
-        const addrJson = await addrRes.json();
-        if (addrJson?.status && addrJson?.data?._id) {
-          addressId = addrJson.data._id;
+      if (!finalAddressId) {
+        try {
+          const addrRes = await fetch(`${API_BASE}/api/addresses`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${activeToken}`,
+            },
+            body: JSON.stringify(addressPayload),
+          });
+          const addrJson = await addrRes.json();
+          if (addrJson?.status && addrJson?.data?._id) {
+            finalAddressId = addrJson.data._id;
+          }
+        } catch (err) {
+          console.warn("Address save API fallback:", err);
         }
-      } catch (err) {
-        console.warn("Address save API fallback:", err);
       }
 
       /* Step 2: Create Order */
       const isCod = paymentMethod === "cod";
       const orderPayload = {
-        addressId: addressId || "66bc11223344556677889900",
+        addressId: finalAddressId || "66bc11223344556677889900",
         paymentMethod: isCod ? "COD" : "RAZORPAY",
         shippingPrice: shipping,
         discountAmount: 0,
@@ -1042,7 +1102,6 @@ export default function CheckoutPage() {
               setOrderPlaced(true);
               clearCart();
             } catch (verifyErr) {
-              console.error("Verification error:", verifyErr);
               setPlacedOrderNumber(createdOrder?.orderNumber || `ECO-${Math.floor(10000 + Math.random() * 90000)}`);
               setPlacedOrderTotal(grandTotal);
               setOrderPlaced(true);
@@ -1077,7 +1136,6 @@ export default function CheckoutPage() {
         return;
       }
     } catch (err) {
-      console.error("Order creation error:", err);
       if (paymentMethod === "cod") {
         setPlacedOrderNumber(`ECO-${Math.floor(10000 + Math.random() * 90000)}`);
         setPlacedOrderTotal(grandTotal);
@@ -1093,7 +1151,6 @@ export default function CheckoutPage() {
 
   const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
 
-  // CUSTOMER NAME FOR CONGRATULATIONS CARD
   const customerName = (
     formData.fullName.trim() ||
     user?.name ||
@@ -1106,10 +1163,8 @@ export default function CheckoutPage() {
 
       <main className="flex-grow">
         {orderPlaced ? (
-          /* 🌟 FULL-WIDTH EDGE-TO-EDGE LUXURY MIDNIGHT SLATE & GOLD HERO SCREEN */
+          /* FULL-WIDTH LUXURY HERO SCREEN */
           <div className="w-full bg-gradient-to-b from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white py-12 sm:py-20 px-4 sm:px-8 border-b-4 border-amber-400/80 shadow-2xl relative overflow-hidden">
-            
-            {/* CELEBRATION FLOATING CONFETTI */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
               <style>{`
                 @keyframes confettiBurst {
@@ -1133,17 +1188,11 @@ export default function CheckoutPage() {
               ))}
             </div>
 
-            {/* GOLD AMBIENT GLOW DECORATIONS */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
-
             <div className="max-w-4xl mx-auto text-center space-y-6 relative z-20">
-              
-              {/* SUCCESS TICK ICON */}
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 flex items-center justify-center mx-auto shadow-2xl animate-bounce">
                 <CheckCircle2 className="w-12 h-12 sm:w-14 sm:h-14 stroke-[2.5]" />
               </div>
 
-              {/* PERSONALIZED USER CONGRATULATIONS */}
               <div className="space-y-2">
                 <p className="text-xs sm:text-sm font-black text-amber-300 tracking-widest uppercase flex items-center justify-center space-x-1.5">
                   <Sparkles className="w-4 h-4 text-amber-300" />
@@ -1158,7 +1207,6 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              {/* ORDER DETAILS SUMMARY BAR */}
               <div className="bg-slate-800/80 border border-amber-400/50 rounded-3xl p-6 sm:p-8 backdrop-blur-md shadow-2xl max-w-2xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                 <div className="space-y-1 border-b sm:border-b-0 sm:border-r border-slate-700 pb-3 sm:pb-0">
                   <p className="text-[10px] font-black uppercase text-slate-400">Order Number</p>
@@ -1176,7 +1224,6 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* ACTION BUTTONS */}
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
                 <Link
                   href="/shop"
@@ -1202,7 +1249,6 @@ export default function CheckoutPage() {
             <div className="max-w-[1400px] mx-auto px-4 sm:px-8 space-y-8">
               
               {safeCartItems.length === 0 ? (
-                /* EMPTY CART CHECKOUT WARNING */
                 <div className="py-20 text-center space-y-6 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-xl mx-auto p-8">
                   <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
                     <ShoppingBag className="w-8 h-8" />
@@ -1219,14 +1265,13 @@ export default function CheckoutPage() {
                   </Link>
                 </div>
               ) : (
-                /* MAIN CHECKOUT FORM & DYNAMIC SUMMARY GRID */
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
                   
-                  {/* LEFT COLUMN: SHIPPING & PAYMENT FORM (7 COLS) */}
+                  {/* LEFT COLUMN: SHIPPING & PAYMENT FORM */}
                   <div className="lg:col-span-7 space-y-6">
                     <form onSubmit={handlePlaceOrder} className="space-y-6">
                       
-                      {/* 1. CUSTOMER INFORMATION (NAME -> EMAIL -> PHONE) */}
+                      {/* 1. CUSTOMER INFORMATION */}
                       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-md space-y-4">
                         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                           <h3 className="text-base font-serif font-black text-slate-900">
@@ -1241,9 +1286,8 @@ export default function CheckoutPage() {
                         </div>
 
                         <div className="space-y-4">
-                          {/* 1. FIELD 1: NAME (SABSE UPAR) */}
                           <div className="space-y-1">
-                            <label className="text-xs font-black uppercase text-slate-700">Name *</label>
+                            <label className="text-xs font-black uppercase text-slate-700">Full Name *</label>
                             <input
                               type="text"
                               name="fullName"
@@ -1256,7 +1300,6 @@ export default function CheckoutPage() {
                           </div>
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {/* 2. FIELD 2: EMAIL ADDRESS */}
                             <div className="space-y-1">
                               <label className="text-xs font-black uppercase text-slate-700">Email Address *</label>
                               <input
@@ -1270,7 +1313,6 @@ export default function CheckoutPage() {
                               />
                             </div>
                             
-                            {/* 3. FIELD 3: PHONE NUMBER */}
                             <div className="space-y-1">
                               <label className="text-xs font-black uppercase text-slate-700">Phone Number *</label>
                               <input
@@ -1287,13 +1329,54 @@ export default function CheckoutPage() {
                         </div>
                       </div>
 
-                      {/* 2. SHIPPING ADDRESS */}
+                      {/* 2. SHIPPING ADDRESS (COMPACT SELECTED CARD + POPUP SELECTOR) */}
                       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-md space-y-4">
-                        <h3 className="text-base font-serif font-black text-slate-900 border-b border-slate-100 pb-3">
-                          2. Shipping Address
-                        </h3>
+                        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                          <h3 className="text-base font-serif font-black text-slate-900 flex items-center space-x-2">
+                            <MapPin className="w-5 h-5 text-[#046A38]" />
+                            <span>2. Shipping Delivery Address</span>
+                          </h3>
 
-                        <div className="space-y-4">
+                          {userAddresses.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setAddressModalOpen(true)}
+                              className="text-xs font-black text-[#046A38] bg-emerald-50 hover:bg-emerald-100 px-3.5 py-1.5 rounded-xl border border-emerald-200 cursor-pointer transition-all flex items-center space-x-1"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                              <span>Change Address ({userAddresses.length})</span>
+                            </button>
+                          )}
+                        </div>
+
+                        {/* COMPACT ACTIVE SELECTED ADDRESS CARD */}
+                        {activeSavedAddress ? (
+                          <div className="p-4 rounded-2xl border-2 border-[#046A38] bg-emerald-50/50 relative space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded bg-emerald-100 text-[#046A38] border border-emerald-200 flex items-center space-x-1">
+                                {activeSavedAddress.type === "Work" ? (
+                                  <Briefcase className="w-3 h-3 text-[#046A38]" />
+                                ) : (
+                                  <Home className="w-3 h-3 text-[#046A38]" />
+                                )}
+                                <span>{activeSavedAddress.isDefault ? "Default Delivery Address" : activeSavedAddress.type || "Selected Address"}</span>
+                              </span>
+                              <span className="text-xs font-black text-[#046A38] flex items-center space-x-1">
+                                <CheckCircle className="w-4 h-4 fill-[#046A38] text-white" />
+                                <span>Selected</span>
+                              </span>
+                            </div>
+
+                            <h4 className="text-sm font-black text-slate-900">{activeSavedAddress.fullName || user?.name}</h4>
+                            <p className="text-xs font-semibold text-slate-600 leading-relaxed">
+                              {activeSavedAddress.addressLine1}, {activeSavedAddress.addressLine2 ? `${activeSavedAddress.addressLine2}, ` : ""}{activeSavedAddress.city}, {activeSavedAddress.state} - {activeSavedAddress.pincode}
+                            </p>
+                            <p className="text-xs font-bold text-slate-500">Phone: {activeSavedAddress.phone || user?.phone}</p>
+                          </div>
+                        ) : null}
+
+                        {/* EDITABLE ADDRESS INPUT FIELDS */}
+                        <div className="space-y-4 pt-2">
                           <div className="space-y-1">
                             <label className="text-xs font-black uppercase text-slate-700">Flat, House No., Building, Street *</label>
                             <input
@@ -1407,13 +1490,12 @@ export default function CheckoutPage() {
                     </form>
                   </div>
 
-                  {/* RIGHT COLUMN: DYNAMIC MINI ORDER PREVIEW (5 COLS) */}
+                  {/* RIGHT COLUMN: DYNAMIC MINI ORDER PREVIEW */}
                   <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-lg space-y-6 sticky top-24">
                     <h3 className="text-lg font-serif font-black text-slate-900 border-b border-slate-200 pb-3">
                       Your Order ({safeCartItems.length} Items)
                     </h3>
 
-                    {/* DYNAMIC CART ITEMS LIST */}
                     <div className="space-y-4 max-h-[380px] overflow-y-auto pr-1">
                       {safeCartItems.map((item) => {
                         const itemKey = item?.itemId || item?.id || item?.productId;
@@ -1441,7 +1523,6 @@ export default function CheckoutPage() {
                       })}
                     </div>
 
-                    {/* COST BREAKDOWN */}
                     <div className="border-t border-slate-200 pt-4 space-y-2.5 text-xs sm:text-sm font-semibold text-slate-700">
                       <div className="flex justify-between">
                         <span>Subtotal:</span>
@@ -1461,7 +1542,6 @@ export default function CheckoutPage() {
                       </div>
                     </div>
 
-                    {/* SECURITY BADGES */}
                     <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center space-y-1 text-xs font-semibold text-slate-600">
                       <div className="flex items-center justify-center space-x-1.5 text-[#046A38] font-bold">
                         <Truck className="w-4 h-4" />
@@ -1481,6 +1561,102 @@ export default function CheckoutPage() {
       </main>
 
       <Footer />
+
+      {/* POPUP MODAL FOR SELECTING SAVED ADDRESSES */}
+      {addressModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="text-base font-black text-slate-900 flex items-center space-x-2">
+                <MapPin className="w-5 h-5 text-[#046A38]" />
+                <span>Select Delivery Address</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setAddressModalOpen(false)}
+                className="p-1 rounded-full text-slate-400 hover:text-slate-700 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
+              {userAddresses.map((addr) => {
+                const aId = addr._id || addr.id;
+                const isSelected = selectedAddressId === aId;
+
+                return (
+                  <div
+                    key={aId}
+                    onClick={() => handleSelectSavedAddress(addr)}
+                    className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative space-y-1 ${
+                      isSelected
+                        ? "border-[#046A38] bg-emerald-50/50 shadow-xs"
+                        : "border-slate-200 bg-slate-50 hover:border-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-slate-200 text-slate-700 flex items-center space-x-1">
+                        {addr.type === "Work" ? (
+                          <Briefcase className="w-3 h-3 text-slate-600" />
+                        ) : (
+                          <Home className="w-3 h-3 text-slate-600" />
+                        )}
+                        <span>{addr.type || "Home"}</span>
+                      </span>
+
+                      {addr.isDefault && (
+                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-emerald-100 text-[#046A38] border border-emerald-200">
+                          Default Address
+                        </span>
+                      )}
+                    </div>
+
+                    <h4 className="text-xs font-black text-slate-900">
+                      {addr.fullName || user?.name}
+                    </h4>
+                    <p className="text-[11px] font-semibold text-slate-600 leading-snug">
+                      {addr.addressLine1}, {addr.addressLine2 ? `${addr.addressLine2}, ` : ""}{addr.city}, {addr.state} - {addr.pincode}
+                    </p>
+                    <p className="text-[11px] font-bold text-slate-500">
+                      Ph: {addr.phone || user?.phone}
+                    </p>
+
+                    {isSelected && (
+                      <div className="absolute top-3 right-3 text-[#046A38]">
+                        <CheckCircle className="w-4 h-4 fill-[#046A38] text-white" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              <div
+                onClick={() => handleSelectSavedAddress("new")}
+                className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-center space-x-2 text-center ${
+                  selectedAddressId === "new"
+                    ? "border-[#046A38] bg-emerald-50/50 text-[#046A38]"
+                    : "border-dashed border-slate-300 bg-slate-50 text-slate-600 hover:border-slate-400"
+                }`}
+              >
+                <Plus className="w-5 h-5 text-[#046A38]" />
+                <span className="text-xs font-black uppercase">+ Deliver to New Address</span>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setAddressModalOpen(false)}
+                className="px-5 py-2 rounded-xl bg-slate-900 text-white font-extrabold text-xs cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
