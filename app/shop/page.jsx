@@ -1055,11 +1055,11 @@ function ShopContent() {
                         </h3>
                       </Link>
 
-                      <div className="flex items-center space-x-1 text-[11px] font-bold text-slate-500">
+                      {/* <div className="flex items-center space-x-1 text-[11px] font-bold text-slate-500">
                         <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                         <span className="text-slate-800 font-black">{item.rating}</span>
                         <span>({item.reviews})</span>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="space-y-0.5">

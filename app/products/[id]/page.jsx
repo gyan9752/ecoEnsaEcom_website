@@ -583,7 +583,7 @@ export default function ProductDetailPage() {
               </div>
 
               <div className="flex items-baseline space-x-3 border-y border-slate-100 py-3.5">
-                <span className="text-3xl sm:text-4xl font-serif font-black text-slate-900">
+                <span className="text-3xl sm:text-4xl font-black text-slate-900">
                   Rs. {price.toLocaleString("en-IN")}.00
                 </span>
                 {mrp > price && (
