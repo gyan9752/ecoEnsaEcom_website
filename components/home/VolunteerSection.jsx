@@ -63,7 +63,6 @@ export default function VolunteerSection() {
           <p className="text-base sm:text-xl text-white font-semibold italic max-w-3xl mx-auto leading-relaxed drop-shadow-md">
             &ldquo;Passionate about driving real change? Join EcoEnsa as a volunteer and turn your time and skills into powerful action for a healthier, greener, and more sustainable future.&rdquo;
           </p>
-
           <div className="pt-3">
             <Link
               href="/contact?subject=Become+a+Volunteer"
