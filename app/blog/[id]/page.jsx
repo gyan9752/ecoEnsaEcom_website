@@ -1,3 +1,7 @@
+
+
+
+
 // /* eslint-disable @next/next/no-img-element */
 // export const dynamic = "force-dynamic";
 
@@ -9,7 +13,7 @@
 
 // // ==========================================
 // // 100% LIVE API CONFIGURATION
-// const API_BASE = "https://test.edu2all.in";
+// const API_BASE = "https://moteligo.in/ecoback";
 // // ==========================================
 
 // // --- GLOBAL UTILS ---
@@ -33,8 +37,8 @@
 // const resolveImageUrl = (url) => {
 //   if (!url) return "/images/logo.png";
 //   if (url.startsWith("http")) return url;
-//   if (url.startsWith("/")) return `${API_BASE}/blog${url}`;
-//   return `${API_BASE}/blog/${url}`;
+//   if (url.startsWith("/")) return `${API_BASE}${url}`;
+//   return `${API_BASE}/${url}`;
 // };
 
 // const resolveBannerUrl = (url) => {
@@ -43,9 +47,9 @@
 //   if (url.startsWith("http")) {
 //     finalUrl = url;
 //   } else if (url.startsWith("/")) {
-//     finalUrl = `${API_BASE}/blog${url}`;
+//     finalUrl = `${API_BASE}${url}`;
 //   } else {
-//     finalUrl = `${API_BASE}/blog/${url}`;
+//     finalUrl = `${API_BASE}/${url}`;
 //   }
 //   return `${finalUrl}${finalUrl.includes("?") ? "&" : "?"}cb=${Date.now()}`;
 // };
@@ -82,7 +86,7 @@
 //     let backendTotalPages = 1;
 //     do {
 //       const res = await fetch(
-//         `${API_BASE}/blog/api/blogs?page=${fetchPage}&t=${Date.now()}`,
+//         `${API_BASE}/api/blogs?page=${fetchPage}&t=${Date.now()}`,
 //         { cache: "no-store" },
 //       );
 //       if (!res.ok) break;
@@ -106,7 +110,7 @@
 // async function getCategories() {
 //   try {
 //     const res = await fetch(
-//       `${API_BASE}/blog/api/admin/categories?t=${Date.now()}`,
+//       `${API_BASE}/api/admin/categories?t=${Date.now()}`,
 //       { cache: "no-store" },
 //     );
 //     if (!res.ok) return [];
@@ -120,7 +124,7 @@
 // async function getSingleNews(id) {
 //   try {
 //     const res = await fetch(
-//       `${API_BASE}/blog/api/blogs/${id}?t=${Date.now()}`,
+//       `${API_BASE}/api/blogs/${id}?t=${Date.now()}`,
 //       { cache: "no-store" },
 //     );
 //     if (!res.ok) return null;
@@ -137,7 +141,7 @@
 // async function getDynamicBanner() {
 //   try {
 //     const res = await fetch(
-//       `${API_BASE}/blog/api/dynamic-images?t=${Date.now()}`,
+//       `${API_BASE}/api/dynamic-images?t=${Date.now()}`,
 //       { cache: "no-store" },
 //     );
 //     if (!res.ok) return null;
@@ -307,13 +311,13 @@
 //       {/* COMPACT ECOENSA GREEN HERO BANNER */}
 //       <div className="w-full bg-gradient-to-br from-emerald-950 via-[#046A38] to-slate-950 text-white py-12 sm:py-16 px-4 sm:px-8 relative overflow-hidden shadow-md">
 //         <div className="relative z-20 max-w-[1400px] mx-auto w-full space-y-4">
-//           <Link
+//           {/* <Link
 //             href="/blog"
 //             className="inline-flex items-center space-x-1.5 text-xs font-black text-amber-300 hover:underline"
 //           >
 //             <ArrowLeft className="w-4 h-4" />
 //             <span>Back to All Blogs</span>
-//           </Link>
+//           </Link> */}
 //           <h1 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-black tracking-tight text-white leading-tight max-w-5xl">
 //             {newsItem.title}
 //           </h1>
@@ -527,7 +531,7 @@
 //                   rel="noopener noreferrer"
 //                   className="block overflow-hidden rounded-2xl mb-3"
 //                 >
-//                   <image
+//                   <img
 //                     src={card1.imageUrl}
 //                     alt={card1.alt}
 //                     className="w-full h-auto object-cover hover:scale-105 transition-transform"
@@ -577,12 +581,13 @@
 
 
 
+
 /* eslint-disable @next/next/no-img-element */
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Calendar, User, ArrowLeft } from "lucide-react";
+import { Calendar, User } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -880,30 +885,35 @@ export default async function NewsDetailPage({ params }) {
   );
 
   return (
-    <div className="bg-slate-50 min-h-screen flex flex-col justify-between font-sans text-slate-900">
+    <div className="bg-slate-50 min-h-screen flex flex-col justify-between font-sans text-slate-900 relative overflow-x-clip">
+      {/* STICKY HEADER */}
       <Header />
 
-      {/* COMPACT ECOENSA GREEN HERO BANNER */}
-      <div className="w-full bg-gradient-to-br from-emerald-950 via-[#046A38] to-slate-950 text-white py-12 sm:py-16 px-4 sm:px-8 relative overflow-hidden shadow-md">
-        <div className="relative z-20 max-w-[1400px] mx-auto w-full space-y-4">
-          {/* <Link
-            href="/blog"
-            className="inline-flex items-center space-x-1.5 text-xs font-black text-amber-300 hover:underline"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to All Blogs</span>
-          </Link> */}
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-black tracking-tight text-white leading-tight max-w-5xl">
+      {/* HERO BANNER SECTION (EXACT REFERENCE MATCH TO SITE HERO DESIGN) */}
+      <section className="relative w-full py-16 sm:py-24 bg-slate-950 text-white text-center overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-40 scale-105"
+          style={{
+            backgroundImage:
+               "url('/images/bg.webp')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[#046A38]/40 to-slate-950" />
+
+        <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-8 space-y-4">
+          {/* SUB-TAG WITH ORANGE DASHES ON BOTH SIDES */}
+          <div className="flex items-center justify-center space-x-3 text-[#FF6B00] text-xs sm:text-sm font-extrabold uppercase tracking-[0.25em]">
+            <span className="w-8 sm:w-12 h-[2px] bg-[#FF6B00]" />
+            <span>{getCategoryString(newsItem) || "BLOG ARTICLE"}</span>
+            <span className="w-8 sm:w-12 h-[2px] bg-[#FF6B00]" />
+          </div>
+
+          {/* MAIN PAGE TITLE */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-black tracking-tight text-white drop-shadow-md max-w-5xl mx-auto">
             {newsItem.title}
           </h1>
-          {getCategoryString(newsItem) && (
-            <span className="inline-block bg-white/10 text-amber-300 font-bold text-xs px-3.5 py-1 rounded-full uppercase tracking-wider border border-white/20">
-              {getCategoryString(newsItem)}
-            </span>
-          )}
         </div>
-        <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-[#FF6B00]/20 rounded-full blur-3xl pointer-events-none" />
-      </div>
+      </section>
 
       {/* GLOBAL 1400PX CONTAINER */}
       <div className="max-w-[1400px] mx-auto px-4 md:px-8 w-full py-12 md:py-16 flex-grow">
